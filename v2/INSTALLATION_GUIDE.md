@@ -127,13 +127,12 @@ php artisan telescope:install
 
 Step 5: Create Custom Configuration Files
 Create config/binance.php:
-
 php artisan make:config binance
+
 Create config/reputation.php:
-
 php artisan make:config reputation
-Create config/mim.php:
 
+Create config/mim.php:
 php artisan make:config mim
 
 Step 6: Generate Application Structure
@@ -153,25 +152,23 @@ php artisan make:migration create_pages_table
 php artisan make:migration create_settings_table
 
 # Create models with relationships
-php artisan make:model Challenge -mcr
-php artisan make:model ChallengeResponse -mcr
-php artisan make:model Category -mcr
-php artisan make:model UserSubscription -mc
-php artisan make:model WalletAddress -mc
-php artisan make:model PaymentTransaction -mc
-php artisan make:model RewardClaim -mc
-php artisan make:model ReputationPoint -mc
-php artisan make:model AchievementBadge -mc
-php artisan make:model Page -mc
-php artisan make:model Setting -mc
+php artisan make:model Challenge -cr
+php artisan make:model ChallengeResponse -cr
+php artisan make:model Category -cr
+php artisan make:model UserSubscription -c
+php artisan make:model WalletAddress -c
+php artisan make:model PaymentTransaction -c
+php artisan make:model RewardClaim -c
+php artisan make:model ReputationPoint -c
+php artisan make:model AchievementBadge -c
+php artisan make:model Page -c
+php artisan make:model Setting -c
 
 # Create controllers
 php artisan make:controller Admin/AdminController
-php artisan make:controller ChallengeController --resource
 php artisan make:controller SubscriptionController
 php artisan make:controller PaymentController
 php artisan make:controller LeaderboardController
-php artisan make:controller PageController
 
 # Create services
 php artisan make:class Services/PaymentService
