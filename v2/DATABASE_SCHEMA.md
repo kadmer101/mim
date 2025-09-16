@@ -1,4 +1,4 @@
-# DATABASE_SCHEMA_V2.md
+# DATABASE_SCHEMA.md
 
 # Mim Platform - Database Schema V2
 *Optimized database structure based on INSTALLATION_GUIDE.md and DIRECTORY_STRUCTURE.md*
