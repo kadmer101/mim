@@ -3239,7 +3239,7 @@ class WebBlocRequest extends FormRequest
 ```
 
 
-**File 8: `resources/views/dashboard/layouts/app.blade.php`**
+## 8: `resources/views/dashboard/layouts/app.blade.php`
 
 ```blade
 <!DOCTYPE html>
@@ -3600,7 +3600,7 @@ class WebBlocRequest extends FormRequest
 </html>
 ```
 
-**File 9: `resources/views/dashboard/admin/index.blade.php`**
+## 9: `resources/views/dashboard/admin/index.blade.php`
 
 ```blade
 @extends('dashboard.layouts.app')
@@ -4066,7 +4066,7 @@ document.addEventListener('DOMContentLoaded', function() {
 @endpush
 ```
 
-**File 10: `resources/views/dashboard/websites/index.blade.php`**
+## 10: `resources/views/dashboard/websites/index.blade.php`
 
 ```blade
 @extends('dashboard.layouts.app')
@@ -4581,7 +4581,7 @@ function websiteManager() {
 @endpush
 ```
 
-**File 11: `resources/views/dashboard/api-keys/index.blade.php`**
+## 11: `resources/views/dashboard/api-keys/index.blade.php`
 
 ```blade
 @extends('dashboard.layouts.app')
@@ -5255,7 +5255,7 @@ function toggleApiKeyVisibility() {
 @endpush
 ```
 
-**File 12: `routes/web.php`**
+## 12: `routes/web.php`
 
 ```php
 <?php
