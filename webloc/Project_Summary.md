@@ -148,7 +148,7 @@ This project aims to create a Laravel-based backend that provides dynamic web co
 15. **Deployment**
     - The application is designed to be deployed without SSH, ensuring ease of use for static website owners.
 
-## Step 6: Source of Truth for User Activities
+## Source of Truth for User Activities
 
 **Admins:**
 - **Dashboard Access**: Admins have full access to the dashboard, where they can manage websites, API keys, components, and statistics.
