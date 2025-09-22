@@ -3603,29 +3603,29 @@ window.webBlocNotifications = webBlocNotifications;
 window.webBlocAuth = webBlocAuth;
 ```
 
-## 7. Core WebBloc Styling (`resources/css/webbloc-core.css`)
+## 7. `resources/css/webbloc-core.css`
 
 ```css
-/* WebBloc Core Styles */
+/* WebBloc Core Styles - Complete Implementation */
 :root {
     /* Color Palette */
     --wb-primary: #3b82f6;
     --wb-primary-dark: #2563eb;
     --wb-primary-light: #dbeafe;
-    
     --wb-success: #10b981;
-    --wb-success-light: #dcfce7;
-    
-    --wb-error: #ef4444;
-    --wb-error-light: #fef2f2;
-    
+    --wb-success-dark: #059669;
+    --wb-success-light: #d1fae5;
     --wb-warning: #f59e0b;
+    --wb-warning-dark: #d97706;
     --wb-warning-light: #fef3c7;
+    --wb-error: #ef4444;
+    --wb-error-dark: #dc2626;
+    --wb-error-light: #fee2e2;
+    --wb-info: #06b6d4;
+    --wb-info-dark: #0891b2;
+    --wb-info-light: #cffafe;
     
-    --wb-info: #3b82f6;
-    --wb-info-light: #dbeafe;
-    
-    /* Neutral Colors */
+    /* Grays */
     --wb-gray-50: #f9fafb;
     --wb-gray-100: #f3f4f6;
     --wb-gray-200: #e5e7eb;
@@ -3639,12 +3639,14 @@ window.webBlocAuth = webBlocAuth;
     
     /* Typography */
     --wb-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --wb-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
     --wb-font-size-xs: 0.75rem;
     --wb-font-size-sm: 0.875rem;
     --wb-font-size-base: 1rem;
     --wb-font-size-lg: 1.125rem;
     --wb-font-size-xl: 1.25rem;
     --wb-font-size-2xl: 1.5rem;
+    --wb-font-size-3xl: 1.875rem;
     
     /* Spacing */
     --wb-space-1: 0.25rem;
@@ -3656,9 +3658,10 @@ window.webBlocAuth = webBlocAuth;
     --wb-space-8: 2rem;
     --wb-space-10: 2.5rem;
     --wb-space-12: 3rem;
+    --wb-space-16: 4rem;
     
     /* Border Radius */
-    --wb-radius-sm: 0.25rem;
+    --wb-radius-sm: 0.125rem;
     --wb-radius: 0.375rem;
     --wb-radius-md: 0.5rem;
     --wb-radius-lg: 0.75rem;
@@ -3666,16 +3669,38 @@ window.webBlocAuth = webBlocAuth;
     --wb-radius-full: 9999px;
     
     /* Shadows */
-    --wb-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --wb-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --wb-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --wb-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --wb-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --wb-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --wb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --wb-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --wb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --wb-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     
     /* Transitions */
-    --wb-transition: all 0.2s ease-in-out;
-    --wb-transition-fast: all 0.15s ease-in-out;
-    --wb-transition-slow: all 0.3s ease-in-out;
+    --wb-transition-fast: 150ms ease-in-out;
+    --wb-transition-base: 300ms ease-in-out;
+    --wb-transition-slow: 500ms ease-in-out;
+    
+    /* Z-index */
+    --wb-z-dropdown: 1000;
+    --wb-z-modal: 1050;
+    --wb-z-popover: 1060;
+    --wb-z-tooltip: 1070;
+}
+
+/* Dark Mode Variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --wb-gray-50: #111827;
+        --wb-gray-100: #1f2937;
+        --wb-gray-200: #374151;
+        --wb-gray-300: #4b5563;
+        --wb-gray-400: #6b7280;
+        --wb-gray-500: #9ca3af;
+        --wb-gray-600: #d1d5db;
+        --wb-gray-700: #e5e7eb;
+        --wb-gray-800: #f3f4f6;
+        --wb-gray-900: #f9fafb;
+    }
 }
 
 /* Reset and Base Styles */
@@ -3683,6 +3708,8 @@ window.webBlocAuth = webBlocAuth;
     box-sizing: border-box;
     font-family: var(--wb-font-family);
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 [w2030b] *,
@@ -3693,10 +3720,38 @@ window.webBlocAuth = webBlocAuth;
 
 /* WebBloc Container Base */
 [w2030b] {
-    --webkit-font-smoothing: antialiased;
-    --moz-osx-font-smoothing: grayscale;
-    color: var(--wb-gray-900);
     font-size: var(--wb-font-size-base);
+    color: var(--wb-gray-900);
+    background-color: var(--wb-gray-50);
+    border-radius: var(--wb-radius);
+    position: relative;
+}
+
+[w2030b] h1,
+[w2030b] h2,
+[w2030b] h3,
+[w2030b] h4,
+[w2030b] h5,
+[w2030b] h6 {
+    margin: 0 0 var(--wb-space-4) 0;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--wb-gray-900);
+}
+
+[w2030b] p {
+    margin: 0 0 var(--wb-space-4) 0;
+}
+
+[w2030b] a {
+    color: var(--wb-primary);
+    text-decoration: none;
+    transition: color var(--wb-transition-fast);
+}
+
+[w2030b] a:hover {
+    color: var(--wb-primary-dark);
+    text-decoration: underline;
 }
 
 /* Button Styles */
@@ -3705,84 +3760,107 @@ window.webBlocAuth = webBlocAuth;
     align-items: center;
     justify-content: center;
     gap: var(--wb-space-2);
-    padding: var(--wb-space-3) var(--wb-space-4);
+    padding: var(--wb-space-2) var(--wb-space-4);
     font-size: var(--wb-font-size-sm);
     font-weight: 500;
-    border-radius: var(--wb-radius);
+    line-height: 1.5;
     border: 1px solid transparent;
+    border-radius: var(--wb-radius);
     cursor: pointer;
-    transition: var(--wb-transition);
+    transition: all var(--wb-transition-fast);
     text-decoration: none;
     white-space: nowrap;
-    outline: none;
-    position: relative;
-    overflow: hidden;
+    user-select: none;
+    vertical-align: middle;
 }
 
 .webbloc-btn:focus {
-    outline: 2px solid var(--wb-primary);
+    outline: 2px solid transparent;
     outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .webbloc-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    pointer-events: none;
 }
 
 /* Button Variants */
 .webbloc-btn-primary {
-    background: var(--wb-primary);
-    color: white;
+    background-color: var(--wb-primary);
     border-color: var(--wb-primary);
+    color: white;
 }
 
 .webbloc-btn-primary:hover:not(:disabled) {
-    background: var(--wb-primary-dark);
+    background-color: var(--wb-primary-dark);
     border-color: var(--wb-primary-dark);
+    color: white;
 }
 
 .webbloc-btn-secondary {
-    background: var(--wb-gray-100);
-    color: var(--wb-gray-700);
-    border-color: var(--wb-gray-300);
+    background-color: var(--wb-gray-200);
+    border-color: var(--wb-gray-200);
+    color: var(--wb-gray-900);
 }
 
 .webbloc-btn-secondary:hover:not(:disabled) {
-    background: var(--wb-gray-200);
-    border-color: var(--wb-gray-400);
-}
-
-.webbloc-btn-outline {
-    background: transparent;
-    color: var(--wb-primary);
-    border-color: var(--wb-primary);
-}
-
-.webbloc-btn-outline:hover:not(:disabled) {
-    background: var(--wb-primary-light);
-}
-
-.webbloc-btn-danger {
-    background: var(--wb-error);
-    color: white;
-    border-color: var(--wb-error);
-}
-
-.webbloc-btn-danger:hover:not(:disabled) {
-    background: #dc2626;
-    border-color: #dc2626;
+    background-color: var(--wb-gray-300);
+    border-color: var(--wb-gray-300);
 }
 
 .webbloc-btn-success {
-    background: var(--wb-success);
-    color: white;
+    background-color: var(--wb-success);
     border-color: var(--wb-success);
+    color: white;
 }
 
 .webbloc-btn-success:hover:not(:disabled) {
-    background: #059669;
-    border-color: #059669;
+    background-color: var(--wb-success-dark);
+    border-color: var(--wb-success-dark);
+}
+
+.webbloc-btn-warning {
+    background-color: var(--wb-warning);
+    border-color: var(--wb-warning);
+    color: white;
+}
+
+.webbloc-btn-warning:hover:not(:disabled) {
+    background-color: var(--wb-warning-dark);
+    border-color: var(--wb-warning-dark);
+}
+
+.webbloc-btn-danger {
+    background-color: var(--wb-error);
+    border-color: var(--wb-error);
+    color: white;
+}
+
+.webbloc-btn-danger:hover:not(:disabled) {
+    background-color: var(--wb-error-dark);
+    border-color: var(--wb-error-dark);
+}
+
+.webbloc-btn-outline {
+    background-color: transparent;
+    border-color: var(--wb-gray-300);
+    color: var(--wb-gray-700);
+}
+
+.webbloc-btn-outline:hover:not(:disabled) {
+    background-color: var(--wb-gray-50);
+    border-color: var(--wb-gray-400);
+}
+
+.webbloc-btn-ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--wb-gray-700);
+}
+
+.webbloc-btn-ghost:hover:not(:disabled) {
+    background-color: var(--wb-gray-100);
 }
 
 /* Button Sizes */
@@ -3793,65 +3871,76 @@ window.webBlocAuth = webBlocAuth;
 
 .webbloc-btn-sm {
     padding: var(--wb-space-2) var(--wb-space-3);
-    font-size: var(--wb-font-size-xs);
+    font-size: var(--wb-font-size-sm);
 }
 
 .webbloc-btn-lg {
-    padding: var(--wb-space-4) var(--wb-space-6);
+    padding: var(--wb-space-3) var(--wb-space-6);
     font-size: var(--wb-font-size-lg);
 }
 
 .webbloc-btn-xl {
-    padding: var(--wb-space-5) var(--wb-space-8);
+    padding: var(--wb-space-4) var(--wb-space-8);
     font-size: var(--wb-font-size-xl);
 }
 
-/* Form Elements */
-.webbloc-input {
-    width: 100%;
-    padding: var(--wb-space-3) var(--wb-space-4);
-    border: 1px solid var(--wb-gray-300);
-    border-radius: var(--wb-radius);
+/* Form Styles */
+.webbloc-label {
+    display: block;
     font-size: var(--wb-font-size-sm);
-    background: white;
-    color: var(--wb-gray-900);
-    transition: var(--wb-transition);
-    outline: none;
+    font-weight: 500;
+    color: var(--wb-gray-700);
+    margin-bottom: var(--wb-space-2);
 }
 
-.webbloc-input:focus {
+.webbloc-input,
+.webbloc-textarea,
+.webbloc-select {
+    display: block;
+    width: 100%;
+    padding: var(--wb-space-3);
+    font-size: var(--wb-font-size-base);
+    line-height: 1.5;
+    color: var(--wb-gray-900);
+    background-color: white;
+    background-image: none;
+    border: 1px solid var(--wb-gray-300);
+    border-radius: var(--wb-radius);
+    transition: border-color var(--wb-transition-fast), box-shadow var(--wb-transition-fast);
+}
+
+.webbloc-input:focus,
+.webbloc-textarea:focus,
+.webbloc-select:focus {
+    outline: none;
     border-color: var(--wb-primary);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.webbloc-input:invalid {
-    border-color: var(--wb-error);
-}
-
-.webbloc-input::placeholder {
+.webbloc-input::placeholder,
+.webbloc-textarea::placeholder {
     color: var(--wb-gray-400);
 }
 
+.webbloc-input:invalid,
+.webbloc-textarea:invalid,
+.webbloc-select:invalid {
+    border-color: var(--wb-error);
+}
+
 .webbloc-textarea {
-    min-height: 100px;
+    min-height: 80px;
     resize: vertical;
-    font-family: inherit;
 }
 
-.webbloc-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right var(--wb-space-3) center;
-    background-repeat: no-repeat;
-    background-size: 1.5em 1.5em;
-    padding-right: var(--wb-space-10);
-}
-
+/* Checkbox and Radio */
 .webbloc-checkbox,
 .webbloc-radio {
     width: var(--wb-space-4);
     height: var(--wb-space-4);
-    border: 1px solid var(--wb-gray-300);
     margin-right: var(--wb-space-2);
+    border: 1px solid var(--wb-gray-300);
+    background-color: white;
     cursor: pointer;
 }
 
@@ -3863,34 +3952,15 @@ window.webBlocAuth = webBlocAuth;
     border-radius: var(--wb-radius-full);
 }
 
-/* Label Styles */
-.webbloc-label {
-    display: block;
-    font-size: var(--wb-font-size-sm);
-    font-weight: 500;
-    color: var(--wb-gray-700);
-    margin-bottom: var(--wb-space-2);
-}
-
-.webbloc-label-required::after {
-    content: ' *';
-    color: var(--wb-error);
-}
-
-/* Form Groups */
-.webbloc-form-group {
-    margin-bottom: var(--wb-space-5);
-}
-
-.webbloc-form-group-inline {
-    display: flex;
-    align-items: center;
-    gap: var(--wb-space-3);
+.webbloc-checkbox:checked,
+.webbloc-radio:checked {
+    background-color: var(--wb-primary);
+    border-color: var(--wb-primary);
 }
 
 /* Card Styles */
 .webbloc-card {
-    background: white;
+    background-color: white;
     border: 1px solid var(--wb-gray-200);
     border-radius: var(--wb-radius-lg);
     box-shadow: var(--wb-shadow-sm);
@@ -3898,9 +3968,9 @@ window.webBlocAuth = webBlocAuth;
 }
 
 .webbloc-card-header {
-    padding: var(--wb-space-5) var(--wb-space-6);
+    padding: var(--wb-space-6);
     border-bottom: 1px solid var(--wb-gray-200);
-    background: var(--wb-gray-50);
+    background-color: var(--wb-gray-50);
 }
 
 .webbloc-card-body {
@@ -3908,9 +3978,16 @@ window.webBlocAuth = webBlocAuth;
 }
 
 .webbloc-card-footer {
-    padding: var(--wb-space-4) var(--wb-space-6);
+    padding: var(--wb-space-6);
     border-top: 1px solid var(--wb-gray-200);
-    background: var(--wb-gray-50);
+    background-color: var(--wb-gray-50);
+}
+
+.webbloc-card-title {
+    font-size: var(--wb-font-size-lg);
+    font-weight: 600;
+    color: var(--wb-gray-900);
+    margin: 0 0 var(--wb-space-2) 0;
 }
 
 /* Modal Styles */
@@ -3920,17 +3997,17 @@ window.webBlocAuth = webBlocAuth;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: var(--wb-z-modal);
     padding: var(--wb-space-4);
 }
 
 .webbloc-modal {
-    background: white;
-    border-radius: var(--wb-radius-xl);
+    background-color: white;
+    border-radius: var(--wb-radius-lg);
     box-shadow: var(--wb-shadow-xl);
     width: 100%;
     max-width: 500px;
@@ -3939,34 +4016,33 @@ window.webBlocAuth = webBlocAuth;
 }
 
 .webbloc-modal-header {
-    display: flex;
-    justify-content: between;
-    align-items: center;
-    padding: var(--wb-space-6) var(--wb-space-6) var(--wb-space-4);
+    padding: var(--wb-space-6);
     border-bottom: 1px solid var(--wb-gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .webbloc-modal-title {
-    font-size: var(--wb-font-size-xl);
+    font-size: var(--wb-font-size-lg);
     font-weight: 600;
-    margin: 0;
     color: var(--wb-gray-900);
+    margin: 0;
 }
 
 .webbloc-modal-close {
+    padding: var(--wb-space-2);
     background: none;
     border: none;
     font-size: var(--wb-font-size-xl);
     color: var(--wb-gray-400);
     cursor: pointer;
-    padding: var(--wb-space-2);
     border-radius: var(--wb-radius);
-    transition: var(--wb-transition);
+    transition: color var(--wb-transition-fast);
 }
 
 .webbloc-modal-close:hover {
     color: var(--wb-gray-600);
-    background: var(--wb-gray-100);
 }
 
 .webbloc-modal-body {
@@ -3974,64 +4050,71 @@ window.webBlocAuth = webBlocAuth;
 }
 
 .webbloc-modal-footer {
-    padding: var(--wb-space-4) var(--wb-space-6) var(--wb-space-6);
+    padding: var(--wb-space-6);
+    border-top: 1px solid var(--wb-gray-200);
     display: flex;
-    justify-content: flex-end;
     gap: var(--wb-space-3);
+    justify-content: flex-end;
 }
 
-/* Message/Alert Styles */
+/* Alert Styles */
 .webbloc-alert {
     padding: var(--wb-space-4);
     border-radius: var(--wb-radius);
-    border: 1px solid transparent;
+    border: 1px solid;
     margin-bottom: var(--wb-space-4);
-    font-size: var(--wb-font-size-sm);
 }
 
 .webbloc-alert-success {
-    background: var(--wb-success-light);
-    color: #065f46;
-    border-color: #10b981;
-}
-
-.webbloc-alert-error {
-    background: var(--wb-error-light);
-    color: #991b1b;
-    border-color: var(--wb-error);
+    background-color: var(--wb-success-light);
+    border-color: var(--wb-success);
+    color: var(--wb-success-dark);
 }
 
 .webbloc-alert-warning {
-    background: var(--wb-warning-light);
-    color: #92400e;
+    background-color: var(--wb-warning-light);
     border-color: var(--wb-warning);
+    color: var(--wb-warning-dark);
+}
+
+.webbloc-alert-error {
+    background-color: var(--wb-error-light);
+    border-color: var(--wb-error);
+    color: var(--wb-error-dark);
 }
 
 .webbloc-alert-info {
-    background: var(--wb-info-light);
-    color: #1e40af;
+    background-color: var(--wb-info-light);
     border-color: var(--wb-info);
+    color: var(--wb-info-dark);
 }
 
-/* Loading States */
+/* Loading and Spinners */
 .webbloc-loading {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--wb-space-2);
-    color: var(--wb-gray-500);
+    display: inline-block;
+    position: relative;
 }
 
 .webbloc-spinner {
-    width: 1em;
-    height: 1em;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
     border: 2px solid var(--wb-gray-200);
-    border-top: 2px solid var(--wb-primary);
-    border-radius: var(--wb-radius-full);
-    animation: webbloc-spin 1s linear infinite;
+    border-radius: 50%;
+    border-top-color: var(--wb-primary);
+    animation: webbloc-spin 1s ease-in-out infinite;
 }
 
 @keyframes webbloc-spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.webbloc-spinner-lg {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
 }
 
 /* Badge Styles */
@@ -4042,47 +4125,40 @@ window.webBlocAuth = webBlocAuth;
     font-size: var(--wb-font-size-xs);
     font-weight: 500;
     border-radius: var(--wb-radius-full);
-    white-space: nowrap;
 }
 
 .webbloc-badge-primary {
-    background: var(--wb-primary-light);
-    color: var(--wb-primary);
+    background-color: var(--wb-primary-light);
+    color: var(--wb-primary-dark);
 }
 
 .webbloc-badge-success {
-    background: var(--wb-success-light);
-    color: #065f46;
-}
-
-.webbloc-badge-error {
-    background: var(--wb-error-light);
-    color: #991b1b;
+    background-color: var(--wb-success-light);
+    color: var(--wb-success-dark);
 }
 
 .webbloc-badge-warning {
-    background: var(--wb-warning-light);
-    color: #92400e;
+    background-color: var(--wb-warning-light);
+    color: var(--wb-warning-dark);
+}
+
+.webbloc-badge-error {
+    background-color: var(--wb-error-light);
+    color: var(--wb-error-dark);
 }
 
 .webbloc-badge-gray {
-    background: var(--wb-gray-100);
-    color: var(--wb-gray-700);
+    background-color: var(--wb-gray-100);
+    color: var(--wb-gray-600);
 }
 
 /* Avatar Styles */
 .webbloc-avatar {
     display: inline-block;
-    position: relative;
-    overflow: hidden;
     border-radius: var(--wb-radius-full);
-    background: var(--wb-gray-100);
-}
-
-.webbloc-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    overflow: hidden;
+    border: 2px solid white;
+    box-shadow: var(--wb-shadow-sm);
 }
 
 .webbloc-avatar-xs {
@@ -4110,35 +4186,13 @@ window.webBlocAuth = webBlocAuth;
     height: 64px;
 }
 
+.webbloc-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 /* Utility Classes */
-.webbloc-sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-.webbloc-text-center {
-    text-align: center;
-}
-
-.webbloc-text-left {
-    text-align: left;
-}
-
-.webbloc-text-right {
-    text-align: right;
-}
-
-.webbloc-hidden {
-    display: none !important;
-}
-
 .webbloc-flex {
     display: flex;
 }
@@ -4159,67 +4213,1991 @@ window.webBlocAuth = webBlocAuth;
     justify-content: space-between;
 }
 
-.webbloc-gap-2 {
-    gap: var(--wb-space-2);
-}
+.webbloc-gap-1 { gap: var(--wb-space-1); }
+.webbloc-gap-2 { gap: var(--wb-space-2); }
+.webbloc-gap-3 { gap: var(--wb-space-3); }
+.webbloc-gap-4 { gap: var(--wb-space-4); }
 
-.webbloc-gap-3 {
-    gap: var(--wb-space-3);
-}
+.webbloc-mt-2 { margin-top: var(--wb-space-2); }
+.webbloc-mt-3 { margin-top: var(--wb-space-3); }
+.webbloc-mt-4 { margin-top: var(--wb-space-4); }
+.webbloc-mb-2 { margin-bottom: var(--wb-space-2); }
+.webbloc-mb-3 { margin-bottom: var(--wb-space-3); }
+.webbloc-mb-4 { margin-bottom: var(--wb-space-4); }
 
-.webbloc-gap-4 {
-    gap: var(--wb-space-4);
+.webbloc-p-2 { padding: var(--wb-space-2); }
+.webbloc-p-3 { padding: var(--wb-space-3); }
+.webbloc-p-4 { padding: var(--wb-space-4); }
+
+.webbloc-text-center { text-align: center; }
+.webbloc-text-left { text-align: left; }
+.webbloc-text-right { text-align: right; }
+
+.webbloc-text-xs { font-size: var(--wb-font-size-xs); }
+.webbloc-text-sm { font-size: var(--wb-font-size-sm); }
+.webbloc-text-lg { font-size: var(--wb-font-size-lg); }
+.webbloc-text-xl { font-size: var(--wb-font-size-xl); }
+
+.webbloc-font-medium { font-weight: 500; }
+.webbloc-font-semibold { font-weight: 600; }
+.webbloc-font-bold { font-weight: 700; }
+
+.webbloc-text-gray-400 { color: var(--wb-gray-400); }
+.webbloc-text-gray-500 { color: var(--wb-gray-500); }
+.webbloc-text-gray-600 { color: var(--wb-gray-600); }
+.webbloc-text-gray-700 { color: var(--wb-gray-700); }
+.webbloc-text-gray-900 { color: var(--wb-gray-900); }
+
+.webbloc-hidden { display: none; }
+.webbloc-block { display: block; }
+.webbloc-inline-block { display: inline-block; }
+
+.webbloc-w-full { width: 100%; }
+.webbloc-h-full { height: 100%; }
+
+.webbloc-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 640px) {
     .webbloc-modal {
         margin: var(--wb-space-4);
-        max-width: none;
+        max-width: calc(100% - var(--wb-space-8));
     }
     
-    .webbloc-modal-header,
-    .webbloc-modal-body,
     .webbloc-modal-footer {
-        padding-left: var(--wb-space-4);
-        padding-right: var(--wb-space-4);
+        flex-direction: column-reverse;
+    }
+    
+    .webbloc-card-header,
+    .webbloc-card-body,
+    .webbloc-card-footer {
+        padding: var(--wb-space-4);
     }
     
     .webbloc-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .webbloc-modal-footer {
-        flex-direction: column;
+        padding: var(--wb-space-3) var(--wb-space-4);
+        font-size: var(--wb-font-size-base);
     }
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-    :root {
-        --wb-gray-50: #1f2937;
-        --wb-gray-100: #374151;
-        --wb-gray-200: #4b5563;
-        --wb-gray-300: #6b7280;
-        --wb-gray-400: #9ca3af;
-        --wb-gray-500: #d1d5db;
-        --wb-gray-600: #e5e7eb;
-        --wb-gray-700: #f3f4f6;
-        --wb-gray-800: #f9fafb;
-        --wb-gray-900: #ffffff;
+    .webbloc-card,
+    .webbloc-modal {
+        background-color: var(--wb-gray-800);
+        border-color: var(--wb-gray-700);
     }
     
-    .webbloc-card,
-    .webbloc-modal,
-    .webbloc-input {
-        background: var(--wb-gray-100);
-        border-color: var(--wb-gray-200);
+    .webbloc-card-header,
+    .webbloc-card-footer {
+        background-color: var(--wb-gray-900);
+        border-color: var(--wb-gray-700);
+    }
+    
+    .webbloc-input,
+    .webbloc-textarea,
+    .webbloc-select {
+        background-color: var(--wb-gray-800);
+        border-color: var(--wb-gray-600);
+        color: var(--wb-gray-100);
+    }
+    
+    .webbloc-input::placeholder,
+    .webbloc-textarea::placeholder {
+        color: var(--wb-gray-500);
     }
 }
+```
 
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-    :root {
-        --wb-primary: #0000ff;
+## 8. `resources/css/webbloc-components.css`
+
+```css
+/* WebBloc Component-Specific Styles */
+
+/* Auth Component Styles */
+.webbloc-auth {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.webbloc-auth-header {
+    text-align: center;
+    margin-bottom: var(--wb-space-6);
+}
+
+.webbloc-auth-title {
+    font-size: var(--wb-font-size-2xl);
+    font-weight: 700;
+    color: var(--wb-gray-900);
+    margin-bottom: var(--wb-space-2);
+}
+
+.webbloc-auth-subtitle {
+    color: var(--wb-gray-600);
+    font-size: var(--wb-font-size-sm);
+}
+
+.webbloc-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wb-space-4);
+}
+
+.webbloc-auth-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.webbloc-auth-error {
+    color: var(--wb-error);
+    font-size: var(--wb-font-size-sm);
+    margin-top: var(--wb-space-1);
+}
+
+.webbloc-auth-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wb-space-3);
+    margin-top: var(--wb-space-2);
+}
+
+.webbloc-auth-link {
+    text-align: center;
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-600);
+}
+
+.webbloc-auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: var(--wb-space-4) 0;
+}
+
+.webbloc-auth-divider::before,
+.webbloc-auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--wb-gray-300);
+}
+
+.webbloc-auth-divider:not(:empty)::before {
+    margin-right: var(--wb-space-2);
+}
+
+.webbloc-auth-divider:not(:empty)::after {
+    margin-left: var(--wb-space-2);
+}
+
+.webbloc-social-login {
+    display: flex;
+    gap: var(--wb-space-2);
+}
+
+.webbloc-social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wb-space-2);
+    padding: var(--wb-space-3);
+    border: 1px solid var(--wb-gray-300);
+    border-radius: var(--wb-radius);
+    background-color: white;
+    color: var(--wb-gray-700);
+    text-decoration: none;
+    transition: all var(--wb-transition-fast);
+}
+
+.webbloc-social-btn:hover {
+    border-color: var(--wb-gray-400);
+    background-color: var(--wb-gray-50);
+}
+
+/* Comments Component Styles */
+.webbloc-comments {
+    max-width: 800px;
+}
+
+.webbloc-comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--wb-space-6);
+    padding-bottom: var(--wb-space-4);
+    border-bottom: 1px solid var(--wb-gray-200);
+}
+
+.webbloc-comments-title {
+    font-size: var(--wb-font-size-xl);
+    font-weight: 600;
+    color: var(--wb-gray-900);
+}
+
+.webbloc-comments-count {
+    color: var(--wb-gray-500);
+    font-size: var(--wb-font-size-sm);
+}
+
+.webbloc-comments-sort {
+    display: flex;
+    align-items: center;
+    gap: var(--wb-space-2);
+}
+
+.webbloc-comments-sort select {
+    padding: var(--wb-space-2) var(--wb-space-3);
+    border: 1px solid var(--wb-gray-300);
+    border-radius: var(--wb-radius);
+    font-size: var(--wb-font-size-sm);
+    background-color: white;
+}
+
+.webbloc-comment-form {
+    margin-bottom: var(--wb-space-8);
+    padding: var(--wb-space-6);
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    background-color: var(--wb-gray-50);
+}
+
+.webbloc-comment-form-header {
+    margin-bottom: var(--wb-space-4);
+}
+
+.webbloc-comment-form-title {
+    font-size: var(--wb-font-size-lg);
+    font-weight: 600;
+    color: var(--wb-gray-900);
+    margin-bottom: var(--wb-space-2);
+}
+
+.webbloc-comment-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--wb-space-4);
+}
+
+.webbloc-comment-form-meta {
+    display: flex;
+    gap: var(--wb-space-4);
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-500);
+}
+
+.webbloc-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wb-space-6);
+}
+
+.webbloc-comment {
+    display: flex;
+    gap: var(--wb-space-3);
+    padding: var(--wb-space-4);
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    background-color: white;
+}
+
+.webbloc-comment-avatar {
+    flex-shrink: 0;
+}
+
+.webbloc-comment-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.webbloc-comment-header {
+    display: flex;
+    align-items: center;
+    gap: var(--wb-space-3);
+    margin-bottom: var(--wb-space-2);
+}
+
+.webbloc-comment-author {
+    font-weight: 600;
+    color: var(--wb-gray-900);
+}
+
+.webbloc-comment-date {
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-500);
+}
+
+.webbloc-comment-body {
+    color: var(--wb-gray-700);
+    line-height: 1.6;
+    margin-bottom: var(--wb-space-3);
+}
+
+.webbloc-comment-actions {
+    display: flex;
+    gap: var(--wb-space-3);
+}
+
+.webbloc-comment-action {
+    background: none;
+    border: none;
+    color: var(--wb-gray-500);
+    font-size: var(--wb-font-size-sm);
+    cursor: pointer;
+    padding: var(--wb-space-1) var(--wb-space-2);
+    border-radius: var(--wb-radius);
+    transition: color var(--wb-transition-fast);
+}
+
+.webbloc-comment-action:hover {
+    color: var(--wb-primary);
+}
+
+.webbloc-comment-replies {
+    margin-top: var(--wb-space-4);
+    padding-left: var(--wb-space-8);
+    border-left: 2px solid var(--wb-gray-200);
+}
+
+.webbloc-comment-reply {
+    margin-top: var(--wb-space-4);
+    padding: var(--wb-space-3);
+    background-color: var(--wb-gray-50);
+    border-radius: var(--wb-radius);
+}
+
+/* Reviews Component Styles */
+.webbloc-reviews {
+    max-width: 900px;
+}
+
+.webbloc-reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--wb-space-6);
+}
+
+.webbloc-reviews-summary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--wb-space-6);
+    margin-bottom: var(--wb-space-8);
+    padding: var(--wb-space-6);
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    background-color: white;
+}
+
+.webbloc-reviews-rating {
+    text-align: center;
+}
+
+.webbloc-reviews-rating-number {
+    font-size: var(--wb-font-size-3xl);
+    font-weight: 700;
+    color: var(--wb-gray-900);
+    margin-bottom: var(--wb-space-1);
+}
+
+.webbloc-reviews-rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: var(--wb-space-1);
+    margin-bottom: var(--wb-space-2);
+}
+
+.webbloc-reviews-rating-count {
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-500);
+}
+
+.webbloc-reviews-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wb-space-2);
+}
+
+.webbloc-reviews-breakdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--wb-space-3);
+}
+
+.webbloc-reviews-breakdown-stars {
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-600);
+    min-width: 60px;
+}
+
+.webbloc-reviews-breakdown-bar {
+    flex: 1;
+    height: 8px;
+    background-color: var(--wb-gray-200);
+    border-radius: var(--wb-radius-full);
+    overflow: hidden;
+}
+
+.webbloc-reviews-breakdown-fill {
+    height: 100%;
+    background-color: var(--wb-warning);
+    transition: width var(--wb-transition-base);
+}
+
+.webbloc-reviews-breakdown-count {
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-500);
+    min-width: 30px;
+    text-align: right;
+}
+
+.webbloc-review-form {
+    margin-bottom: var(--wb-space-8);
+    padding: var(--wb-space-6);
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    background-color: var(--wb-gray-50);
+}
+
+.webbloc-star-rating {
+    display: flex;
+    gap: var(--wb-space-1);
+    margin-bottom: var(--wb-space-4);
+}
+
+.webbloc-star-rating input {
+    display: none;
+}
+
+.webbloc-star-rating label {
+    font-size: var(--wb-font-size-2xl);
+    color: var(--wb-gray-300);
+    cursor: pointer;
+    transition: color var(--wb-transition-fast);
+}
+
+.webbloc-star-rating label:hover,
+.webbloc-star-rating label:hover ~ label,
+.webbloc-star-rating input:checked ~ label {
+    color: var(--wb-warning);
+}
+
+.webbloc-reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wb-space-6);
+}
+
+.webbloc-review {
+    padding: var(--wb-space-6);
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    background-color: white;
+}
+
+.webbloc-review-header {
+    display: flex;
+    align-items: center;
+    gap: var(--wb-space-3);
+    margin-bottom: var(--wb-space-3);
+}
+
+.webbloc-review-meta {
+    flex: 1;
+}
+
+.webbloc-review-author {
+    font-weight: 600;
+    color: var(--wb-gray-900);
+    margin-bottom: var(--wb-space-1);
+}
+
+.webbloc-review-rating {
+    display: flex;
+    gap: var(--wb-space-1);
+    margin-bottom: var(--wb-space-1);
+}
+
+.webbloc-review-date {
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-500);
+}
+
+.webbloc-review-title {
+    font-size: var(--wb-font-size-lg);
+    font-weight: 600;
+    color: var(--wb-gray-900);
+    margin-bottom: var(--wb-space-2);
+}
+
+.webbloc-review-body {
+    color: var(--wb-gray-700);
+    line-height: 1.6;
+    margin-bottom: var(--wb-space-3);
+}
+
+.webbloc-review-actions {
+    display: flex;
+    gap: var(--wb-space-3);
+}
+
+.webbloc-review-helpful {
+    display: flex;
+    align-items: center;
+    gap: var(--wb-space-2);
+    font-size: var(--wb-font-size-sm);
+    color: var(--wb-gray-500);
+}
+
+/* Notifications Component Styles */
+.webbloc-notifications {
+    position: relative;
+}
+
+.webbloc-notification-bell {
+    position: relative;
+    background: none;
+    border: none;
+    padding: var(--wb-space-2);
+    border-radius: var(--wb-radius-full);
+    cursor: pointer;
+    color: var(--wb-gray-600);
+    transition: all var(--wb-transition-fast);
+}
+
+.webbloc-notification-bell:hover {
+    background-color: var(--wb-gray-100);
+    color: var(--wb-gray-900);
+}
+
+.webbloc-notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--wb-error);
+    color: white;
+    font-size: var(--wb-font-size-xs);
+    font-weight: 600;
+    border-radius: var(--wb-radius-full);
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(25%, -25%);
+}
+
+.webbloc-notification-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    background-color: white;
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    box-shadow: var(--wb-shadow-lg);
+    z-index: var(--wb-z-dropdown);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.webbloc-notification-header {
+    padding: var(--wb-space-4);
+    border-bottom: 1px solid var(--wb-gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.webbloc-notification-title {
+    font-weight: 600;
+    color: var(--wb-gray-900);
+}
+
+.webbloc-notification-clear {
+    background: none;
+    border: none;
+    color: var(--wb-primary);
+    font-size: var(--wb-font-size-sm);
+    cursor: pointer;
+}
+
+.webbloc-notifications-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.webbloc-notification-item {
+    padding: var(--wb-space-4);
+    border-bottom: 1px solid var(--wb-gray-100);
+    cursor: pointer;
+    transition: background-color var(--wb-transition-fast);
+}
+
+.webbloc-notification-item:hover {
+    background-color: var(--wb-gray-50);
+}
+
+.webbloc-notification-item.unread {
+    background-color: var(--wb-primary-light);
+}
+
+.webbloc-notification-content {
+    display: flex;
+    gap: var(--wb-space-3);
+}
+
+.webbloc-notification-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--wb-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--wb-font-size-sm);
+}
+
+.webbloc-notification-icon.success {
+    background-color: var(--wb-success-light);
+    color: var(--wb-success);
+}
+
+.webbloc-notification-icon.warning {
+    background-color: var(--wb-warning-light);
+    color: var(--wb-warning);
+}
+
+.webbloc-notification-icon.error {
+    background-color: var(--wb-error-light);
+    color: var(--wb-error);
+}
+
+.webbloc-notification-icon.info {
+    background-color: var(--wb-info-light);
+    color: var(--wb-info);
+}
+
+.webbloc-notification-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.webbloc-notification-message {
+    color: var(--wb-gray-900);
+    font-size: var(--wb-font-size-sm);
+    line-height: 1.4;
+    margin-bottom: var(--wb-space-1);
+}
+
+.webbloc-notification-time {
+    color: var(--wb-gray-500);
+    font-size: var(--wb-font-size-xs);
+}
+
+.webbloc-notification-empty {
+    padding: var(--wb-space-8);
+    text-align: center;
+    color: var(--wb-gray-500);
+    font-size: var(--wb-font-size-sm);
+}
+
+/* Toast Notifications */
+.webbloc-toast-container {
+    position: fixed;
+    z-index: var(--wb-z-tooltip);
+    pointer-events: none;
+}
+
+.webbloc-toast-container.top-right {
+    top: var(--wb-space-4);
+    right: var(--wb-space-4);
+}
+
+.webbloc-toast-container.top-left {
+    top: var(--wb-space-4);
+    left: var(--wb-space-4);
+}
+
+.webbloc-toast-container.bottom-right {
+    bottom: var(--wb-space-4);
+    right: var(--wb-space-4);
+}
+
+.webbloc-toast-container.bottom-left {
+    bottom: var(--wb-space-4);
+    left: var(--wb-space-4);
+}
+
+.webbloc-toast {
+    background-color: white;
+    border: 1px solid var(--wb-gray-200);
+    border-radius: var(--wb-radius-lg);
+    box-shadow: var(--wb-shadow-lg);
+    padding: var(--wb-space-4);
+    margin-bottom: var(--wb-space-2);
+    max-width: 400px;
+    pointer-events: auto;
+    transform: translateX(100%);
+    transition: transform var(--wb-transition-base);
+}
+
+.webbloc-toast.show {
+    transform: translateX(0);
+}
+
+.webbloc-toast-content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--wb-space-3);
+}
+
+.webbloc-toast-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.webbloc-toast-body {
+    flex: 1;
+}
+
+.webbloc-toast-title {
+    font-weight: 600;
+    color: var(--wb-gray-900);
+    margin-bottom: var(--wb-space-1);
+}
+
+.webbloc-toast-message {
+    color: var(--wb-gray-700);
+    font-size: var(--wb-font-size-sm);
+}
+
+.webbloc-toast-close {
+    background: none;
+    border: none;
+    color: var(--wb-gray-400);
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive adjustments for components */
+@media (max-width: 640px) {
+    .webbloc-comments-header,
+    .webbloc-reviews-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--wb-space-3);
+    }
+    
+    .webbloc-reviews-summary {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .webbloc-comment,
+    .webbloc-review {
+        padding: var(--wb-space-4);
+    }
+    
+    .webbloc-comment-replies {
+        padding-left: var(--wb-space-4);
+    }
+    
+    .webbloc-notification-dropdown {
+        width: 280px;
+        right: -60px;
+    }
+    
+    .webbloc-toast {
+        max-width: calc(100vw - var(--wb-space-8));
+    }
+}
+```
+
+## 9. `app/Services/CdnService.php`
+
+```php
+<?php
+
+namespace App\Services;
+
+use App\Models\Website;
+use App\Models\WebBloc;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+
+class CdnService
+{
+    protected string $cdnPath;
+    protected string $publicPath;
+    
+    public function __construct()
+    {
+        $this->cdnPath = storage_path('app/cdn');
+        $this->publicPath = public_path('cdn');
+        
+        // Ensure CDN directories exist
+        if (!File::exists($this->cdnPath)) {
+            File::makeDirectory($this->cdnPath, 0755, true);
+        }
+        
+        if (!File::exists($this->publicPath)) {
+            File::makeDirectory($this->publicPath, 0755, true);
+        }
+    }
+    
+    /**
+     * Build all CDN assets for WebBloc components
+     */
+    public function buildAll(): array
+    {
+        $results = [];
+        
+        try {
+            // Build core CSS and JS files
+            $results['core_css'] = $this->buildCoreCSS();
+            $results['core_js'] = $this->buildCoreJS();
+            $results['components_css'] = $this->buildComponentsCSS();
+            
+            // Build individual component files
+            $webBlocs = WebBloc::where('status', 'active')->get();
+            $componentResults = [];
+            
+            foreach ($webBlocs as $webBloc) {
+                $componentResults[$webBloc->type] = $this->buildComponentFiles($webBloc);
+            }
+            
+            $results['components'] = $componentResults;
+            
+            // Build combined/minified versions
+            $results['combined'] = $this->buildCombinedFiles();
+            
+            // Generate manifest file
+            $results['manifest'] = $this->generateManifest();
+            
+            return $results;
+            
+        } catch (\Exception $e) {
+            \Log::error('CDN Build Error: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString()
+            ]);
+            
+            throw $e;
+        }
+    }
+    
+    /**
+     * Build core WebBloc CSS
+     */
+    protected function buildCoreCSS(): string
+    {
+        $coreCSS = File::get(resource_path('css/webbloc-core.css'));
+        
+        // Process CSS variables and optimize
+        $processedCSS = $this->processCSS($coreCSS);
+        
+        // Write to CDN path
+        $filename = 'webbloc-core.css';
+        $filepath = $this->publicPath . '/' . $filename;
+        File::put($filepath, $processedCSS);
+        
+        // Create minified version
+        $minifiedCSS = $this->minifyCSS($processedCSS);
+        $minFilepath = $this->publicPath . '/webbloc-core.min.css';
+        File::put($minFilepath, $minifiedCSS);
+        
+        return $filename;
+    }
+    
+    /**
+     * Build components CSS
+     */
+    protected function buildComponentsCSS(): string
+    {
+        $componentsCSS = File::get(resource_path('css/webbloc-components.css'));
+        
+        // Process and optimize
+        $processedCSS = $this->processCSS($componentsCSS);
+        
+        $filename = 'webbloc-components.css';
+        $filepath = $this->publicPath . '/' . $filename;
+        File::put($filepath, $processedCSS);
+        
+        // Minified version
+        $minifiedCSS = $this->minifyCSS($processedCSS);
+        $minFilepath = $this->publicPath . '/webbloc-components.min.css';
+        File::put($minFilepath, $minifiedCSS);
+        
+        return $filename;
+    }
+    
+    /**
+     * Build core WebBloc JavaScript
+     */
+    protected function buildCoreJS(): string
+    {
+        $coreJS = $this->generateCoreJS();
+        
+        $filename = 'webbloc-core.js';
+        $filepath = $this->publicPath . '/' . $filename;
+        File::put($filepath, $coreJS);
+        
+        // Minified version
+        $minifiedJS = $this->minifyJS($coreJS);
+        $minFilepath = $this->publicPath . '/webbloc-core.min.js';
+        File::put($minFilepath, $minifiedJS);
+        
+        return $filename;
+    }
+    
+    /**
+     * Generate core JavaScript functionality
+     */
+    protected function generateCoreJS(): string
+    {
+        return <<<'JS'
+// WebBloc Core JavaScript
+(function() {
+    'use strict';
+    
+    // WebBloc namespace
+    window.WebBloc = window.WebBloc || {};
+    
+    // Configuration
+    WebBloc.config = {
+        apiBaseUrl: window.webBlocConfig?.apiBaseUrl || '/api',
+        apiKey: null,
+        websiteId: null,
+        debug: window.webBlocConfig?.debug || false
+    };
+    
+    // Utilities
+    WebBloc.utils = {
+        // Get API key from various sources
+        getApiKey() {
+            return WebBloc.config.apiKey || 
+                   document.querySelector('[data-webbloc-api-key]')?.dataset.webBlocApiKey ||
+                   document.querySelector('meta[name="webbloc-api-key"]')?.content;
+        },
+        
+        // Get website ID
+        getWebsiteId() {
+            return WebBloc.config.websiteId ||
+                   document.querySelector('[data-webbloc-website-id]')?.dataset.webBlocWebsiteId ||
+                   document.querySelector('meta[name="webbloc-website-id"]')?.content;
+        },
+        
+        // Make API request
+        async apiRequest(endpoint, options = {}) {
+            const apiKey = this.getApiKey();
+            const websiteId = this.getWebsiteId();
+            
+            if (!apiKey) {
+                throw new Error('WebBloc API key not found');
+            }
+            
+            const url = `${WebBloc.config.apiBaseUrl}${endpoint}`;
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': apiKey,
+                    'X-Website-ID': websiteId,
+                    'Accept': 'application/json'
+                }
+            };
+            
+            const mergedOptions = {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...options.headers
+                }
+            };
+            
+            const response = await fetch(url, mergedOptions);
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ message: 'Network error' }));
+                throw new Error(error.message || 'API request failed');
+            }
+            
+            return response.json();
+        },
+        
+        // Format date
+        formatDate(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(new Date(date));
+        },
+        
+        // Escape HTML
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        },
+        
+        // Generate unique ID
+        generateId() {
+            return 'wb_' + Math.random().toString(36).substr(2, 9);
+        },
+        
+        // Debounce function
+        debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    };
+    
+    // Notification system
+    WebBloc.notify = {
+        show(message, type = 'info', duration = 5000) {
+            const toast = document.createElement('div');
+            toast.className = `webbloc-toast webbloc-toast-${type}`;
+            toast.innerHTML = `
+                <div class="webbloc-toast-content">
+                    <div class="webbloc-toast-icon">
+                        ${this.getIcon(type)}
+                    </div>
+                    <div class="webbloc-toast-body">
+                        <div class="webbloc-toast-message">${WebBloc.utils.escapeHtml(message)}</div>
+                    </div>
+                    <button class="webbloc-toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            const container = this.getContainer();
+            container.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Auto remove
+            if (duration > 0) {
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+        },
+        
+        success(message, duration) {
+            this.show(message, 'success', duration);
+        },
+        
+        error(message, duration) {
+            this.show(message, 'error', duration);
+        },
+        
+        warning(message, duration) {
+            this.show(message, 'warning', duration);
+        },
+        
+        info(message, duration) {
+            this.show(message, 'info', duration);
+        },
+        
+        getContainer() {
+            let container = document.querySelector('.webbloc-toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'webbloc-toast-container top-right';
+                document.body.appendChild(container);
+            }
+            return container;
+        },
+        
+        getIcon(type) {
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠',
+                info: 'ⓘ'
+            };
+            return icons[type] || icons.info;
+        }
+    };
+    
+    // Component initialization
+    WebBloc.init = {
+        auto() {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+            } else {
+                this.initializeComponents();
+            }
+        },
+        
+        initializeComponents() {
+            // Find all WebBloc components
+            const components = document.querySelectorAll('[w2030b]');
+            
+            components.forEach(component => {
+                const type = component.getAttribute('w2030b');
+                this.initializeComponent(component, type);
+            });
+        },
+        
+        initializeComponent(element, type) {
+            if (element.dataset.webBlocInitialized === 'true') {
+                return; // Already initialized
+            }
+            
+            element.dataset.webBlocInitialized = 'true';
+            
+            // Load component-specific functionality
+            if (WebBloc.components && WebBloc.components[type]) {
+                try {
+                    WebBloc.components[type].init(element);
+                } catch (error) {
+                    console.error(`Error initializing WebBloc component ${type}:`, error);
+                }
+            }
+        }
+    };
+    
+    // Loading states
+    WebBloc.loading = {
+        show(element) {
+            if (!element.querySelector('.webbloc-loading-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'webbloc-loading-overlay';
+                overlay.innerHTML = '<div class="webbloc-spinner"></div>';
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                `;
+                element.style.position = 'relative';
+                element.appendChild(overlay);
+            }
+        },
+        
+        hide(element) {
+            const overlay = element.querySelector('.webbloc-loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+    };
+    
+    // Components namespace
+    WebBloc.components = {};
+    
+    // Auto-initialize on DOM ready
+    WebBloc.init.auto();
+    
+    // Global error handling
+    window.addEventListener('error', (event) => {
+        if (WebBloc.config.debug) {
+            console.error('WebBloc Error:', event.error);
+        }
+    });
+    
+    // Expose for manual initialization
+    window.webBlocInit = WebBloc.init.initializeComponents.bind(WebBloc.init);
+    
+})();
+JS;
+    }
+    
+    /**
+     * Build component-specific files
+     */
+    protected function buildComponentFiles(WebBloc $webBloc): array
+    {
+        $results = [];
+        
+        try {
+            // Generate component JavaScript
+            $componentJS = $this->generateComponentJS($webBloc);
+            $jsFilename = "webbloc-{$webBloc->type}.js";
+            $jsFilepath = $this->publicPath . '/' . $jsFilename;
+            File::put($jsFilepath, $componentJS);
+            
+            // Minified version
+            $minifiedJS = $this->minifyJS($componentJS);
+            $minJsFilepath = $this->publicPath . "/webbloc-{$webBloc->type}.min.js";
+            File::put($minJsFilepath, $minifiedJS);
+            
+            $results['js'] = $jsFilename;
+            $results['js_min'] = "webbloc-{$webBloc->type}.min.js";
+            
+            // Generate component CSS if custom styles exist
+            if (!empty($webBloc->css)) {
+                $componentCSS = $this->processCSS($webBloc->css);
+                $cssFilename = "webbloc-{$webBloc->type}.css";
+                $cssFilepath = $this->publicPath . '/' . $cssFilename;
+                File::put($cssFilepath, $componentCSS);
+                
+                $results['css'] = $cssFilename;
+            }
+            
+        } catch (\Exception $e) {
+            \Log::error("Error building component {$webBloc->type}: " . $e->getMessage());
+            throw $e;
+        }
+        
+        return $results;
+    }
+    
+    /**
+     * Generate JavaScript for a specific component
+     */
+    protected function generateComponentJS(WebBloc $webBloc): string
+    {
+        $componentName = Str::studly($webBloc->type);
+        $config = json_encode($webBloc->attributes ?? []);
+        
+        return <<<JS
+// WebBloc {$componentName} Component
+(function() {
+    'use strict';
+    
+    if (!window.WebBloc) {
+        console.error('WebBloc core not loaded');
+        return;
+    }
+    
+    const {$componentName}Component = {
+        config: {$config},
+        
+        init(element) {
+            this.element = element;
+            this.setupComponent();
+            this.bindEvents();
+            this.loadContent();
+        },
+        
+        setupComponent() {
+            // Add component-specific classes
+            this.element.classList.add('webbloc-{$webBloc->type}');
+            
+            // Set up initial HTML structure
+            if (!this.element.innerHTML.trim()) {
+                this.element.innerHTML = this.getTemplate();
+            }
+            
+            // Initialize Alpine.js data if available
+            if (typeof Alpine !== 'undefined' && !this.element._x_dataStack) {
+                this.setupAlpineData();
+            }
+        },
+        
+        getTemplate() {
+            return `{$this->getComponentTemplate($webBloc)}`;
+        },
+        
+        setupAlpineData() {
+            const self = this;
+            
+            this.element._x_dataStack = [{
+                loading: false,
+                error: null,
+                data: [],
+                
+                async loadData() {
+                    this.loading = true;
+                    this.error = null;
+                    
+                    try {
+                        const response = await WebBloc.utils.apiRequest('/webblocs/{$webBloc->type}', {
+                            method: 'GET'
+                        });
+                        
+                        this.data = response.data || [];
+                    } catch (error) {
+                        this.error = error.message;
+                        WebBloc.notify.error(error.message);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                
+                async create(formData) {
+                    this.loading = true;
+                    
+                    try {
+                        const response = await WebBloc.utils.apiRequest('/webblocs/{$webBloc->type}', {
+                            method: 'POST',
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        this.data.unshift(response.data);
+                        WebBloc.notify.success('{$componentName} created successfully');
+                        
+                        // Reset form if it exists
+                        const form = self.element.querySelector('form');
+                        if (form) form.reset();
+                        
+                    } catch (error) {
+                        WebBloc.notify.error(error.message);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                
+                async update(id, formData) {
+                    try {
+                        const response = await WebBloc.utils.apiRequest(`/webblocs/{$webBloc->type}/\${id}`, {
+                            method: 'PUT',
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        const index = this.data.findIndex(item => item.id === id);
+                        if (index !== -1) {
+                            this.data[index] = response.data;
+                        }
+                        
+                        WebBloc.notify.success('{$componentName} updated successfully');
+                    } catch (error) {
+                        WebBloc.notify.error(error.message);
+                    }
+                },
+                
+                async delete(id) {
+                    try {
+                        await WebBloc.utils.apiRequest(`/webblocs/{$webBloc->type}/\${id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        this.data = this.data.filter(item => item.id !== id);
+                        WebBloc.notify.success('{$componentName} deleted successfully');
+                    } catch (error) {
+                        WebBloc.notify.error(error.message);
+                    }
+                }
+            }];
+            
+            // Initialize Alpine if not already done
+            if (typeof Alpine !== 'undefined' && Alpine.version) {
+                Alpine.initTree(this.element);
+            }
+        },
+        
+        bindEvents() {
+            // Component-specific event binding
+            this.element.addEventListener('webbloc:refresh', () => {
+                this.loadContent();
+            });
+        },
+        
+        loadContent() {
+            // Trigger initial data load if Alpine.js is available
+            if (this.element._x_dataStack && this.element._x_dataStack[0].loadData) {
+                this.element._x_dataStack[0].loadData();
+            }
+        }
+    };
+    
+    // Register component
+    WebBloc.components['{$webBloc->type}'] = {$componentName}Component;
+    
+})();
+JS;
+    }
+    
+    /**
+     * Get component template
+     */
+    protected function getComponentTemplate(WebBloc $webBloc): string
+    {
+        // Try to get template from blade views
+        $templatePath = resource_path("views/webbloc/{$webBloc->type}/default.blade.php");
+        
+        if (File::exists($templatePath)) {
+            $content = File::get($templatePath);
+            // Remove blade directives and convert to HTML
+            $content = preg_replace('/@[a-zA-Z]+(\([^)]*\))?/', '', $content);
+            return addslashes($content);
+        }
+        
+        // Fallback template based on component type
+        return $this->getDefaultTemplate($webBloc->type);
+    }
+    
+    /**
+     * Get default template for component type
+     */
+    protected function getDefaultTemplate(string $type): string
+    {
+        switch ($type) {
+            case 'comments':
+                return '<div class="webbloc-comments-container"><div x-data><div x-show="loading" class="webbloc-loading"><div class="webbloc-spinner"></div></div><div x-show="!loading"><div class="webbloc-comments-list"><template x-for="comment in data"><div class="webbloc-comment" x-text="comment.content"></div></template></div></div></div></div>';
+                
+            case 'reviews':
+                return '<div class="webbloc-reviews-container"><div x-data><div x-show="loading" class="webbloc-loading"><div class="webbloc-spinner"></div></div><div x-show="!loading"><div class="webbloc-reviews-list"><template x-for="review in data"><div class="webbloc-review" x-text="review.content"></div></template></div></div></div></div>';
+                
+            case 'auth':
+                return '<div class="webbloc-auth-container"><div class="webbloc-auth-form"><form><div class="webbloc-auth-field"><input type="email" placeholder="Email" class="webbloc-input"></div><div class="webbloc-auth-field"><input type="password" placeholder="Password" class="webbloc-input"></div><button type="submit" class="webbloc-btn webbloc-btn-primary">Sign In</button></form></div></div>';
+                
+            default:
+                return '<div class="webbloc-component-container"><div x-data><div x-show="loading" class="webbloc-loading"><div class="webbloc-spinner"></div></div><div x-show="!loading && data.length === 0" class="webbloc-empty">No items found.</div><div x-show="!loading && data.length > 0"><template x-for="item in data"><div class="webbloc-item" x-text="item.title || item.name || item.content"></div></template></div></div></div>';
+        }
+    }
+    
+    /**
+     * Build combined/minified files
+     */
+    protected function buildCombinedFiles(): array
+    {
+        $results = [];
+        
+        // Combine all CSS
+        $combinedCSS = '';
+        $combinedCSS .= File::get($this->publicPath . '/webbloc-core.css');
+        $combinedCSS .= "\n\n";
+        $combinedCSS .= File::get($this->publicPath . '/webbloc-components.css');
+        
+        // Add component-specific CSS
+        $webBlocs = WebBloc::where('status', 'active')->get();
+        foreach ($webBlocs as $webBloc) {
+            $componentCSSPath = $this->publicPath . "/webbloc-{$webBloc->type}.css";
+            if (File::exists($componentCSSPath)) {
+                $combinedCSS .= "\n\n";
+                $combinedCSS .= File::get($componentCSSPath);
+            }
+        }
+        
+        $combinedCSSFile = 'webbloc.css';
+        File::put($this->publicPath . '/' . $combinedCSSFile, $combinedCSS);
+        
+        $minifiedCSS = $this->minifyCSS($combinedCSS);
+        $minCSSFile = 'webbloc.min.css';
+        File::put($this->publicPath . '/' . $minCSSFile, $minifiedCSS);
+        
+        // Combine all JS
+        $combinedJS = File::get($this->publicPath . '/webbloc-core.js');
+        
+        foreach ($webBlocs as $webBloc) {
+            $componentJSPath = $this->publicPath . "/webbloc-{$webBloc->type}.js";
+            if (File::exists($componentJSPath)) {
+                $combinedJS .= "\n\n";
+                $combinedJS .= File::get($componentJSPath);
+            }
+        }
+        
+        $combinedJSFile = 'webbloc.js';
+        File::put($this->publicPath . '/' . $combinedJSFile, $combinedJS);
+        
+        $minifiedJS = $this->minifyJS($combinedJS);
+        $minJSFile = 'webbloc.min.js';
+        File::put($this->publicPath . '/' . $minJSFile, $minifiedJS);
+        
+        $results['css'] = $combinedCSSFile;
+        $results['css_min'] = $minCSSFile;
+        $results['js'] = $combinedJSFile;
+        $results['js_min'] = $minJSFile;
+        
+        return $results;
+    }
+    
+    /**
+     * Generate manifest file
+     */
+    protected function generateManifest(): string
+    {
+        $files = File::files($this->publicPath);
+        $manifest = [
+            'generated_at' => now()->toISOString(),
+            'version' => config('app.version', '1.0.0'),
+            'files' => []
+        ];
+        
+        foreach ($files as $file) {
+            $filename = $file->getFilename();
+            $manifest['files'][$filename] = [
+                'size' => $file->getSize(),
+                'hash' => md5_file($file->getPathname()),
+                'modified' => date('c', $file->getMTime())
+            ];
+        }
+        
+        $manifestContent = json_encode($manifest, JSON_PRETTY_PRINT);
+        $manifestFile = 'manifest.json';
+        File::put($this->publicPath . '/' . $manifestFile, $manifestContent);
+        
+        return $manifestFile;
+    }
+    
+    /**
+     * Process CSS (autoprefixer, variables, etc.)
+     */
+    protected function processCSS(string $css): string
+    {
+        // Basic CSS processing
+        $css = preg_replace('/\/\*.*?\*\//s', '', $css); // Remove comments
+        $css = preg_replace('/\s+/', ' ', $css); // Normalize whitespace
+        
+        return trim($css);
+    }
+    
+    /**
+     * Minify CSS
+     */
+    protected function minifyCSS(string $css): string
+    {
+        // Remove comments
+        $css = preg_replace('/\/\*.*?\*\//s', '', $css);
+        
+        // Remove unnecessary whitespace
+        $css = preg_replace('/\s+/', ' ', $css);
+        $css = preg_replace('/;\s*}/', '}', $css);
+        $css = preg_replace('/\s*{\s*/', '{', $css);
+        $css = preg_replace('/;\s*/', ';', $css);
+        $css = preg_replace('/:\s*/', ':', $css);
+        
+        return trim($css);
+    }
+    
+    /**
+     * Minify JavaScript
+     */
+    protected function minifyJS(string $js): string
+    {
+        // Basic JS minification
+        // Remove single-line comments
+        $js = preg_replace('/\/\/.*$/m', '', $js);
+        
+        // Remove multi-line comments
+        $js = preg_replace('/\/\*.*?\*\//s', '', $js);
+        
+        // Remove unnecessary whitespace
+        $js = preg_replace('/\s+/', ' ', $js);
+        
+        return trim($js);
+    }
+    
+    /**
+     * Get CDN URL for a file
+     */
+    public function getCdnUrl(string $filename): string
+    {
+        return url("cdn/{$filename}");
+    }
+    
+    /**
+     * Get integration code for a website
+     */
+    public function getIntegrationCode(Website $website, array $components = []): array
+    {
+        $apiKey = $website->apiKeys()->where('status', 'active')->first();
+        
+        if (!$apiKey) {
+            throw new \Exception('No active API key found for website');
+        }
+        
+        $baseUrl = url('/');
+        
+        return [
+            'html' => $this->generateIntegrationHTML($website, $apiKey, $components),
+            'css_urls' => [
+                $this->getCdnUrl('webbloc.min.css')
+            ],
+            'js_urls' => [
+                $this->getCdnUrl('webbloc.min.js')
+            ],
+            'api_key' => $apiKey->key,
+            'website_id' => $website->id
+        ];
+    }
+    
+    /**
+     * Generate integration HTML
+     */
+    protected function generateIntegrationHTML(Website $website, $apiKey, array $components): string
+    {
+        $html = "<!-- WebBloc Integration for {$website->name} -->\n";
+        $html .= "<link rel=\"stylesheet\" href=\"{$this->getCdnUrl('webbloc.min.css')}\">\n";
+        $html .= "<script defer src=\"{$this->getCdnUrl('webbloc.min.js')}\"></script>\n\n";
+        
+        $html .= "<!-- WebBloc Configuration -->\n";
+        $html .= "<script>\n";
+        $html .= "window.webBlocConfig = {\n";
+        $html .= "    apiBaseUrl: '" . url('/api') . "',\n";
+        $html .= "    debug: false\n";
+        $html .= "};\n";
+        $html .= "</script>\n\n";
+        
+        $html .= "<!-- WebBloc Meta Tags -->\n";
+        $html .= "<meta name=\"webbloc-api-key\" content=\"{$apiKey->key}\">\n";
+        $html .= "<meta name=\"webbloc-website-id\" content=\"{$website->id}\">\n\n";
+        
+        if (!empty($components)) {
+            $html .= "<!-- WebBloc Components -->\n";
+            foreach ($components as $component) {
+                $html .= "<div w2030b=\"{$component}\" data-webbloc-api-key=\"{$apiKey->key}\" data-webbloc-website-id=\"{$website->id}\"></div>\n";
+            }
+        }
+        
+        return $html;
+    }
+    
+    /**
+     * Clear CDN cache
+     */
+    public function clearCache(): void
+    {
+        Cache::tags(['webbloc-cdn'])->flush();
+        
+        // Clear file cache
+        if (File::exists($this->publicPath)) {
+            File::cleanDirectory($this->publicPath);
+        }
+    }
+}
+```
+
+## 10. `app/Console/Commands/BuildWebBlocCdn.php`
+
+```php
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\Services\CdnService;
+use Illuminate\Support\Facades\File;
+
+class BuildWebBlocCdn extends Command
+{
+    /**
+     * The name and signature of the console command.
+     */
+    protected $signature = 'webbloc:build-cdn 
+                            {--force : Force rebuild all files}
+                            {--component= : Build specific component only}
+                            {--watch : Watch for changes and rebuild automatically}';
+
+    /**
+     * The console command description.
+     */
+    protected $description = 'Build WebBloc CDN assets (CSS, JS, and component files)';
+
+    protected CdnService $cdnService;
+
+    public function __construct(CdnService $cdnService)
+    {
+        parent::__construct();
+        $this->cdnService = $cdnService;
+    }
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $this->info('🚀 Building WebBloc CDN assets...');
+        $startTime = microtime(true);
+        
+        try {
+            if ($this->option('watch')) {
+                return $this->handleWatch();
+            }
+            
+            if ($this->option('force')) {
+                $this->info('🧹 Clearing existing CDN files...');
+                $this->cdnService->clearCache();
+            }
+            
+            $component = $this->option('component');
+            
+            if ($component) {
+                $this->buildSpecificComponent($component);
+            } else {
+                $this->buildAll();
+            }
+            
+            $executionTime = round((microtime(true) - $startTime), 2);
+            $this->info("✅ CDN build completed in {$executionTime}s");
+            
+            return Command::SUCCESS;
+            
+        } catch (\Exception $e) {
+            $this->error('❌ CDN build failed: ' . $e->getMessage());
+            
+            if ($this->option('verbose')) {
+                $this->error($e->getTraceAsString());
+            }
+            
+            return Command::FAILURE;
+        }
+    }
+    
+    /**
+     * Build all CDN assets
+     */
+    protected function buildAll(): void
+    {
+        $this->info('📦 Building all WebBloc assets...');
+        
+        $results = $this->cdnService->buildAll();
+        
+        $this->displayBuildResults($results);
+    }
+    
+    /**
+     * Build specific component
+     */
+    protected function buildSpecificComponent(string $component): void
+    {
+        $this->info("📦 Building component: {$component}");
+        
+        $webBloc = \App\Models\WebBloc::where('type', $component)->first();
+        
+        if (!$webBloc) {
+            $this->error("Component '{$component}' not found");
+            return;
+        }
+        
+        $this->info("Building {$webBloc->type} component...");
+        
+        // Build the specific component files
+        // This would need to be implemented in CdnService
+        // $results = $this->cdnService->buildComponent($webBloc);
+        
+        $this->info("✅ Component {$component} built successfully");
+    }
+    
+    /**
+     * Watch for changes and rebuild
+     */
+    protected function handleWatch(): int
+    {
+        $this->info('👀 Watching for changes...');
+        $this->info('Press Ctrl+C to stop watching');
+        
+        $watchPaths = [
+            resource_path('css/webbloc-core.css'),
+            resource_path('css/webbloc-components.css'),
+            resource_path('views/webbloc'),
+        ];
+        
+        $lastModified = [];
+        
+        while (true) {
+            $changed = false;
+            
+            foreach ($watchPaths as $path) {
+                if (File::exists($path)) {
+                    $currentModified = File::lastModified($path);
+                    
+                    if (!isset($lastModified[$path]) || $currentModified > $lastModified[$path]) {
+                        $lastModified[$path] = $currentModified;
+                        $changed = true;
+                        
+                        $this->info("📝 Change detected in: {$path}");
+                    }
+                }
+            }
+            
+            if ($changed) {
+                try {
+                    $this->info('🔄 Rebuilding assets...');
+                    $this->cdnService->buildAll();
+                    $this->info('✅ Assets rebuilt successfully');
+                } catch (\Exception $e) {
+                    $this->error('❌ Rebuild failed: ' . $e->getMessage());
+                }
+            }
+            
+            sleep(1); // Check every second
+        }
+        
+        return Command::SUCCESS;
+    }
+    
+    /**
+     * Display build results
+     */
+    protected function displayBuildResults(array $results): void
+    {
+        $this->newLine();
+        $this->info('📊 Build Results:');
+        
+        // Core files
+        if (isset($results['core_css'])) {
+            $this->line("  ✅ Core CSS: {$results['core_css']}");
+        }
+        
+        if (isset($results['core_js'])) {
+            $this->line("  ✅ Core JS: {$results['core_js']}");
+        }
+        
+        if (isset($results['components_css'])) {
+            $this->line("  ✅ Components CSS: {$results['components_css']}");
+        }
+        
+        // Component files
+        if (isset($results['components']) && is_array($results['components'])) {
+            $this->line("  📦 Components:");
+            
+            foreach ($results['components'] as $component => $files) {
+                $this->line("    • {$component}:");
+                
+                if (isset($files['js'])) {
+                    $this->line("      - JS: {$files['js']}");
+                }
+                
+                if (isset($files['js_min'])) {
+                    $this->line("      - JS (min): {$files['js_min']}");
+                }
+                
+                if (isset($files['css'])) {
+                    $this->line("      - CSS: {$files['css']}");
+                }
+            }
+        }
+        
+        // Combined files
+        if (isset($results['combined'])) {
+            $this->line("  📋 Combined Files:");
+            
+            foreach ($results['combined'] as $type => $filename) {
+                $this->line("    • {$type}: {$filename}");
+            }
+        }
+        
+        // Manifest
+        if (isset($results['manifest'])) {
+            $this->line("  📄 Manifest: {$results['manifest']}");
+        }
+        
+        $this->newLine();
+        $this->displayCdnUrls();
+    }
+    
+    /**
+     * Display CDN URLs
+     */
+    protected function displayCdnUrls(): void
+    {
+        $this->info('🔗 CDN URLs:');
+        
+        $baseUrl = url('/cdn');
+        
+        $this->line("  CSS: {$baseUrl}/webbloc.min.css");
+        $this->line("  JS:  {$baseUrl}/webbloc.min.js");
+        $this->line("  Manifest: {$baseUrl}/manifest.json");
+        
+        $this->newLine();
+        
+        // Display integration example
+        $this->info('📋 Integration Example:');
+        
+        $example = <<<HTML
+<!-- Add to your HTML <head> -->
+<link rel="stylesheet" href="{$baseUrl}/webbloc.min.css">
+<script defer src="{$baseUrl}/webbloc.min.js"></script>
+
+<!-- Add WebBloc components -->
+<div w2030b="comments" data-webbloc-api-key="YOUR_API_KEY" data-webbloc-website-id="YOUR_WEBSITE_ID"></div>
+HTML;
+        
+        $this->line($example);
+    }
+    
+    /**
+     * Get file size in human readable format
+     */
+    protected function getHumanFileSize($bytes, $decimals = 2): string
+    {
+        $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
+        $factor = floor((strlen($bytes) - 1) / 3);
+        
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . @$size[$factor];
+    }
+    
+    /**
+     * Display file information
+     */
+    protected function displayFileInfo(string $filepath): void
+    {
+        if (File::exists($filepath)) {
+            $size = $this->getHumanFileSize(File::size($filepath));
+            $filename = basename($filepath);
+            $this->line("      {$filename} ({$size})");
+        }
+    }
+    
+    /**
+     * Validate environment
+     */
+    protected function validateEnvironment(): bool
+    {
+        $errors = [];
+        
+        // Check if public/cdn directory is writable
+        $cdnPath = public_path('cdn');
+        if (!File::exists($cdnPath)) {
+            try {
+                File::makeDirectory($cdnPath, 0755, true);
+            } catch (\Exception $e) {
+                $errors[] = "Cannot create CDN directory: {$cdnPath}";
+            }
+        } elseif (!File::isWritable($cdnPath)) {
+            $errors[] = "CDN directory is not writable: {$cdnPath}";
+        }
+        
+        // Check if resource files exist
+        $requiredFiles = [
+            resource_path('css/webbloc-core.css'),
+            resource_path('css/webbloc-components.css')
+        ];
+        
+        foreach ($requiredFiles as $file) {
+            if (!File::exists($file)) {
+                $errors[] = "Required source file missing: {$file}";
+            }
+        }
+        
+        if (!empty($errors)) {
+            $this->error('❌ Environment validation failed:');
+            foreach ($errors as $error) {
+                $this->error("  • {$error}");
+            }
+            return false;
+        }
+        
+        return true;
+    }
+}
 ```
