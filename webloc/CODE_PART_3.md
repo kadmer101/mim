@@ -3237,3 +3237,2293 @@ class WebBlocRequest extends FormRequest
     }
 }
 ```
+
+
+**File 8: `resources/views/dashboard/layouts/app.blade.php`**
+
+```blade
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>{{ config('app.name', 'WebBloc') }} - @yield('title', 'Dashboard')</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 0.5rem;
+            margin: 0.25rem 0;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(4px);
+        }
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 0.75rem;
+        }
+        .main-content {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar-custom {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+        }
+        .stats-card-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .stats-card-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .stats-card-warning {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        .webbloc-component {
+            border: 2px dashed #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #f8f9fa;
+        }
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+    
+    @stack('styles')
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 p-0">
+                <div class="sidebar p-3">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="bi bi-puzzle-fill fs-2 text-white me-2"></i>
+                        <h4 class="text-white mb-0">WebBloc</h4>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        @can('admin')
+                        <a class="nav-link {{ request()->routeIs('dashboard.admin.*') ? 'active' : '' }}" 
+                           href="{{ route('dashboard.admin.index') }}">
+                            <i class="bi bi-speedometer2"></i>Admin Dashboard
+                        </a>
+                        @endcan
+                        
+                        <a class="nav-link {{ request()->routeIs('dashboard.websites.*') ? 'active' : '' }}" 
+                           href="{{ route('dashboard.websites.index') }}">
+                            <i class="bi bi-globe"></i>Websites
+                        </a>
+                        
+                        <a class="nav-link {{ request()->routeIs('dashboard.api-keys.*') ? 'active' : '' }}" 
+                           href="{{ route('dashboard.api-keys.index') }}">
+                            <i class="bi bi-key"></i>API Keys
+                        </a>
+                        
+                        @can('admin')
+                        <a class="nav-link {{ request()->routeIs('dashboard.webblocs.*') ? 'active' : '' }}" 
+                           href="{{ route('dashboard.webblocs.index') }}">
+                            <i class="bi bi-puzzle"></i>WebBlocs
+                        </a>
+                        
+                        <a class="nav-link {{ request()->routeIs('dashboard.statistics.*') ? 'active' : '' }}" 
+                           href="{{ route('dashboard.statistics.index') }}">
+                            <i class="bi bi-graph-up"></i>Statistics
+                        </a>
+                        @endcan
+                        
+                        <hr class="text-white-50">
+                        
+                        <a class="nav-link" href="{{ route('profile.edit') }}">
+                            <i class="bi bi-person"></i>Profile
+                        </a>
+                        
+                        <form method="POST" action="{{ route('logout') }}" class="mt-auto">
+                            @csrf
+                            <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+                                <i class="bi bi-box-arrow-right"></i>Logout
+                            </button>
+                        </form>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 p-0">
+                <div class="main-content">
+                    <!-- Top Navigation -->
+                    <nav class="navbar navbar-expand-lg navbar-custom px-4">
+                        <div class="navbar-nav ms-auto">
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        <span class="text-white fw-bold">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                    </div>
+                                    {{ Auth::user()->name }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                        <i class="bi bi-person me-2"></i>Profile
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <!-- Page Content -->
+                    <div class="p-4">
+                        @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        @endif
+                        
+                        @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        @endif
+                        
+                        @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        @endif
+                        
+                        @yield('content')
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(function(alert) {
+                if (alert.classList.contains('show')) {
+                    new bootstrap.Alert(alert).close();
+                }
+            });
+        }, 5000);
+        
+        // Confirmation dialogs
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('confirm-delete')) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        e.target.closest('form').submit();
+                    }
+                });
+            }
+        });
+        
+        // Copy to clipboard functionality
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                Swal.fire({
+                    title: 'Copied!',
+                    text: 'Content copied to clipboard',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            });
+        }
+        
+        // WebBloc component preview
+        function previewWebBloc(type, config) {
+            const modal = new bootstrap.Modal(document.getElementById('webbloc-preview-modal'));
+            document.getElementById('webbloc-preview-content').innerHTML = generateWebBlocPreview(type, config);
+            modal.show();
+        }
+        
+        function generateWebBlocPreview(type, config) {
+            const templates = {
+                auth: `
+                    <div class="webbloc-component" data-webbloc="auth">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Authentication Component</h5>
+                            <span class="badge bg-primary">${type}</span>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary">Login</button>
+                            <button class="btn btn-outline-secondary">Register</button>
+                        </div>
+                    </div>
+                `,
+                comments: `
+                    <div class="webbloc-component" data-webbloc="comments">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Comments Component</h5>
+                            <span class="badge bg-success">${type}</span>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" placeholder="Write a comment..."></textarea>
+                            <div class="mt-2">
+                                <button class="btn btn-primary btn-sm">Post Comment</button>
+                            </div>
+                        </div>
+                        <div class="comment-item p-3 border rounded mb-2">
+                            <strong>Sample User:</strong> This is a sample comment for preview.
+                        </div>
+                    </div>
+                `,
+                reviews: `
+                    <div class="webbloc-component" data-webbloc="reviews">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Reviews Component</h5>
+                            <span class="badge bg-warning">${type}</span>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="me-2">Rating:</span>
+                                ${'★'.repeat(5)} 
+                            </div>
+                            <textarea class="form-control" placeholder="Write your review..."></textarea>
+                            <div class="mt-2">
+                                <button class="btn btn-warning btn-sm">Submit Review</button>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                notifications: `
+                    <div class="webbloc-component" data-webbloc="notifications">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Notifications Component</h5>
+                            <span class="badge bg-info">${type}</span>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-bell me-2"></i>Sample notification message
+                        </div>
+                    </div>
+                `
+            };
+            
+            return templates[type] || `<div class="webbloc-component">Unknown WebBloc type: ${type}</div>`;
+        }
+    </script>
+    
+    <!-- WebBloc Preview Modal -->
+    <div class="modal fade" id="webbloc-preview-modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">WebBloc Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="webbloc-preview-content">
+                    <!-- Preview content will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @stack('scripts')
+</body>
+</html>
+```
+
+**File 9: `resources/views/dashboard/admin/index.blade.php`**
+
+```blade
+@extends('dashboard.layouts.app')
+
+@section('title', 'Admin Dashboard')
+
+@section('content')
+<div x-data="adminDashboard()" x-init="init()">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">Admin Dashboard</h2>
+            <p class="text-muted mb-0">System overview and management</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button @click="refreshData()" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-clockwise" :class="{ 'rotating': loading }"></i> Refresh
+            </button>
+            <button @click="clearCache()" class="btn btn-outline-warning">
+                <i class="bi bi-trash"></i> Clear Cache
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card card-hover h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-subtitle mb-2 text-white-50">Total Websites</h6>
+                        <h3 class="card-title mb-0" x-text="stats.websites || '0'">{{ $stats['websites'] ?? 0 }}</h3>
+                    </div>
+                    <i class="bi bi-globe fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card-primary card-hover h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-subtitle mb-2 text-white-50">API Requests (24h)</h6>
+                        <h3 class="card-title mb-0" x-text="stats.apiRequests || '0'">{{ $stats['api_requests'] ?? 0 }}</h3>
+                    </div>
+                    <i class="bi bi-graph-up fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card-success card-hover h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-subtitle mb-2 text-white-50">Active Users</h6>
+                        <h3 class="card-title mb-0" x-text="stats.activeUsers || '0'">{{ $stats['active_users'] ?? 0 }}</h3>
+                    </div>
+                    <i class="bi bi-people fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card-warning card-hover h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-subtitle mb-2 text-white-50">WebBlocs Installed</h6>
+                        <h3 class="card-title mb-0" x-text="stats.webBlocs || '0'">{{ $stats['webblocs'] ?? 0 }}</h3>
+                    </div>
+                    <i class="bi bi-puzzle fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-3">
+            <div class="card card-hover h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">API Usage Trends</h5>
+                    <select class="form-select form-select-sm" style="width: auto;" x-model="chartPeriod" @change="updateChart()">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <canvas id="apiUsageChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <div class="card card-hover h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Response Format Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="formatDistributionChart"></canvas>
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">HTML Responses</small>
+                            <small class="fw-bold">75%</small>
+                        </div>
+                        <div class="progress mb-2" style="height: 4px;">
+                            <div class="progress-bar bg-primary" style="width: 75%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">JSON Responses</small>
+                            <small class="fw-bold">15%</small>
+                        </div>
+                        <div class="progress mb-2" style="height: 4px;">
+                            <div class="progress-bar bg-success" style="width: 15%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">Other Formats</small>
+                            <small class="fw-bold">10%</small>
+                        </div>
+                        <div class="progress" style="height: 4px;">
+                            <div class="progress-bar bg-warning" style="width: 10%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities and System Health -->
+    <div class="row">
+        <div class="col-lg-8 mb-3">
+            <div class="card card-hover h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Activities</h5>
+                    <button @click="refreshActivities()" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="activity-list" style="max-height: 400px; overflow-y: auto;">
+                        <template x-for="activity in activities" :key="activity.id">
+                            <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
+                                         style="width: 40px; height: 40px;">
+                                        <i :class="getActivityIcon(activity.type)" class="text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1" x-text="activity.title"></h6>
+                                        <small class="text-muted" x-text="formatTime(activity.created_at)"></small>
+                                    </div>
+                                    <p class="text-muted mb-0 small" x-text="activity.description"></p>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <!-- Fallback activities for demo -->
+                        @foreach($activities ?? [] as $activity)
+                        <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="bi {{ $activity['icon'] ?? 'bi-activity' }} text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1">{{ $activity['title'] }}</h6>
+                                    <small class="text-muted">{{ $activity['time'] }}</small>
+                                </div>
+                                <p class="text-muted mb-0 small">{{ $activity['description'] }}</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-3">
+            <div class="card card-hover h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">System Health</h5>
+                </div>
+                <div class="card-body">
+                    <div class="system-health">
+                        <!-- Database Status -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Database Connection</span>
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> Online
+                            </span>
+                        </div>
+                        
+                        <!-- Cache Status -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Cache System</span>
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> Active
+                            </span>
+                        </div>
+                        
+                        <!-- Storage Usage -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Storage Usage</span>
+                                <span class="text-muted">{{ $systemHealth['storage_usage'] ?? '65%' }}</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" style="width: {{ $systemHealth['storage_percentage'] ?? 65 }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Memory Usage -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Memory Usage</span>
+                                <span class="text-muted">{{ $systemHealth['memory_usage'] ?? '45%' }}</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: {{ $systemHealth['memory_percentage'] ?? 45 }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- API Response Time -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Avg Response Time</span>
+                            <span class="badge bg-info">{{ $systemHealth['avg_response_time'] ?? '125ms' }}</span>
+                        </div>
+                        
+                        <!-- Last Backup -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Last Backup</span>
+                            <small class="text-muted">{{ $systemHealth['last_backup'] ?? '2 hours ago' }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">System Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <button @click="clearCache()" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-trash"></i> Clear Cache
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button @click="optimizeDatabase()" class="btn btn-outline-info w-100">
+                                <i class="bi bi-gear"></i> Optimize DB
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button @click="backupSystem()" class="btn btn-outline-success w-100">
+                                <i class="bi bi-download"></i> Backup
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ route('dashboard.statistics.export') }}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-file-earmark-excel"></i> Export Data
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function adminDashboard() {
+    return {
+        loading: false,
+        stats: @json($stats ?? []),
+        activities: @json($activities ?? []),
+        chartPeriod: '7',
+        apiChart: null,
+        formatChart: null,
+        
+        init() {
+            this.initCharts();
+            this.startRealTimeUpdates();
+        },
+        
+        initCharts() {
+            // API Usage Chart
+            const apiCtx = document.getElementById('apiUsageChart').getContext('2d');
+            this.apiChart = new Chart(apiCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'API Requests',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Format Distribution Chart
+            const formatCtx = document.getElementById('formatDistributionChart').getContext('2d');
+            this.formatChart = new Chart(formatCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['HTML', 'JSON', 'Other'],
+                    datasets: [{
+                        data: [75, 15, 10],
+                        backgroundColor: ['#0d6efd', '#198754', '#ffc107']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        },
+        
+        startRealTimeUpdates() {
+            // Update stats every 30 seconds
+            setInterval(() => {
+                this.refreshData();
+            }, 30000);
+        },
+        
+        async refreshData() {
+            this.loading = true;
+            try {
+                const response = await fetch('/dashboard/admin/stats');
+                const data = await response.json();
+                this.stats = data.stats;
+                this.updateChart();
+            } catch (error) {
+                console.error('Failed to refresh data:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        
+        async refreshActivities() {
+            try {
+                const response = await fetch('/dashboard/admin/activities');
+                const data = await response.json();
+                this.activities = data.activities;
+            } catch (error) {
+                console.error('Failed to refresh activities:', error);
+            }
+        },
+        
+        updateChart() {
+            if (this.apiChart) {
+                // Update chart data based on period
+                // This would typically fetch new data from the server
+                this.apiChart.update();
+            }
+        },
+        
+        async clearCache() {
+            try {
+                const response = await fetch('/dashboard/admin/clear-cache', { method: 'POST' });
+                if (response.ok) {
+                    Swal.fire('Success!', 'Cache cleared successfully', 'success');
+                }
+            } catch (error) {
+                Swal.fire('Error!', 'Failed to clear cache', 'error');
+            }
+        },
+        
+        async optimizeDatabase() {
+            Swal.fire({
+                title: 'Optimize Database?',
+                text: 'This will optimize all database tables.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, optimize!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch('/dashboard/admin/optimize-db', { method: 'POST' });
+                        if (response.ok) {
+                            Swal.fire('Success!', 'Database optimized successfully', 'success');
+                        }
+                    } catch (error) {
+                        Swal.fire('Error!', 'Failed to optimize database', 'error');
+                    }
+                }
+            });
+        },
+        
+        async backupSystem() {
+            try {
+                const response = await fetch('/dashboard/admin/backup', { method: 'POST' });
+                if (response.ok) {
+                    Swal.fire('Success!', 'Backup created successfully', 'success');
+                }
+            } catch (error) {
+                Swal.fire('Error!', 'Failed to create backup', 'error');
+            }
+        },
+        
+        getActivityIcon(type) {
+            const icons = {
+                'website': 'bi bi-globe',
+                'api_key': 'bi bi-key',
+                'webbloc': 'bi bi-puzzle',
+                'user': 'bi bi-person',
+                'system': 'bi bi-gear',
+                'error': 'bi bi-exclamation-triangle'
+            };
+            return icons[type] || 'bi bi-activity';
+        },
+        
+        formatTime(timestamp) {
+            return new Date(timestamp).toLocaleString();
+        }
+    };
+}
+
+// Add rotating animation for refresh button
+document.addEventListener('DOMContentLoaded', function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .rotating {
+            animation: rotate 1s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+@endpush
+```
+
+**File 10: `resources/views/dashboard/websites/index.blade.php`**
+
+```blade
+@extends('dashboard.layouts.app')
+
+@section('title', 'Websites Management')
+
+@section('content')
+<div x-data="websiteManager()" x-init="init()">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">Websites</h2>
+            <p class="text-muted mb-0">Manage your registered websites and integrations</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button @click="showCreateModal()" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add Website
+            </button>
+            <button @click="refreshWebsites()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Search websites..." 
+                               x-model="filters.search" @input="filterWebsites()">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" x-model="filters.status" @change="filterWebsites()">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending Verification</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" x-model="filters.plan" @change="filterWebsites()">
+                        <option value="">All Plans</option>
+                        <option value="free">Free</option>
+                        <option value="pro">Pro</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button @click="resetFilters()" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Websites Grid -->
+    <div class="row">
+        <template x-for="website in filteredWebsites" :key="website.id">
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card card-hover h-100">
+                    <!-- Website Status Badge -->
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span :class="getStatusBadgeClass(website.status)" x-text="website.status"></span>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Website Info -->
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary rounded d-flex align-items-center justify-content-center" 
+                                     style="width: 48px; height: 48px;">
+                                    <i class="bi bi-globe text-white fs-4"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1" x-text="website.name"></h5>
+                                <p class="text-muted small mb-0">
+                                    <i class="bi bi-link-45deg"></i>
+                                    <a :href="'https://' + website.domain" target="_blank" 
+                                       x-text="website.domain" class="text-decoration-none"></a>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Website Stats -->
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="border-end">
+                                    <h6 class="mb-1" x-text="website.api_calls_today || '0'"></h6>
+                                    <small class="text-muted">Today</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border-end">
+                                    <h6 class="mb-1" x-text="website.webblocs_count || '0'"></h6>
+                                    <small class="text-muted">WebBlocs</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h6 class="mb-1" x-text="website.api_keys_count || '0'"></h6>
+                                <small class="text-muted">API Keys</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Installed WebBlocs -->
+                        <div class="mb-3">
+                            <small class="text-muted">Installed WebBlocs:</small>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                <template x-for="webbloc in website.webblocs" :key="webbloc">
+                                    <span class="badge bg-light text-dark" x-text="webbloc"></span>
+                                </template>
+                                <template x-if="!website.webblocs || website.webblocs.length === 0">
+                                    <span class="badge bg-light text-muted">None installed</span>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="d-flex gap-2">
+                            <button @click="viewWebsite(website)" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                <i class="bi bi-eye"></i> View
+                            </button>
+                            <button @click="manageWebBlocs(website)" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-puzzle"></i> WebBlocs
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                        data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" @click="editWebsite(website)">
+                                        <i class="bi bi-pencil me-2"></i>Edit
+                                    </a></li>
+                                    <li><a class="dropdown-item" @click="viewStats(website)">
+                                        <i class="bi bi-graph-up me-2"></i>Statistics
+                                    </a></li>
+                                    <li><a class="dropdown-item" @click="regenerateToken(website)">
+                                        <i class="bi bi-arrow-clockwise me-2"></i>Regenerate Token
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" @click="deleteWebsite(website)">
+                                        <i class="bi bi-trash me-2"></i>Delete
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Empty State -->
+        <template x-if="filteredWebsites.length === 0">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-globe display-1 text-muted"></i>
+                    <h4 class="mt-3">No websites found</h4>
+                    <p class="text-muted mb-4">Get started by adding your first website to integrate WebBloc components.</p>
+                    <button @click="showCreateModal()" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Your First Website
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-4" x-show="totalPages > 1">
+        <div>
+            <small class="text-muted">
+                Showing <span x-text="((currentPage - 1) * perPage) + 1"></span> to 
+                <span x-text="Math.min(currentPage * perPage, totalWebsites)"></span> of 
+                <span x-text="totalWebsites"></span> websites
+            </small>
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <button class="page-link" @click="goToPage(currentPage - 1)">Previous</button>
+                </li>
+                <template x-for="page in getVisiblePages()" :key="page">
+                    <li class="page-item" :class="{ active: page === currentPage }">
+                        <button class="page-link" @click="goToPage(page)" x-text="page"></button>
+                    </li>
+                </template>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <button class="page-link" @click="goToPage(currentPage + 1)">Next</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Add Website Modal -->
+<div class="modal fade" id="addWebsiteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form @submit.prevent="createWebsite()" x-data="{ form: { name: '', domain: '', description: '', plan: 'free' } }">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Website</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Website Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" x-model="form.name" required
+                               placeholder="My Awesome Website">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Domain <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" x-model="form.domain" required
+                               placeholder="example.com">
+                        <div class="form-text">Enter your domain without http:// or https://</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" x-model="form.description" rows="3"
+                                  placeholder="Brief description of your website"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Plan</label>
+                        <select class="form-select" x-model="form.plan">
+                            <option value="free">Free (10K requests/month)</option>
+                            <option value="pro">Pro ($9/month - 100K requests)</option>
+                            <option value="enterprise">Enterprise (Custom limits)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        After adding your website, you'll need to verify domain ownership by adding a verification token to your site.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Website
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- WebBloc Management Modal -->
+<div class="modal fade" id="webBlocModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage WebBlocs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" x-data="{ selectedWebsite: null }" x-init="selectedWebsite = websiteManager().selectedWebsite">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h6>Available WebBlocs</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title">Authentication</h6>
+                                            <span class="badge bg-primary">auth</span>
+                                        </div>
+                                        <p class="card-text small text-muted">User login, registration, and profile management</p>
+                                        <button class="btn btn-sm btn-success w-100">
+                                            <i class="bi bi-check"></i> Installed
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title">Comments</h6>
+                                            <span class="badge bg-success">comments</span>
+                                        </div>
+                                        <p class="card-text small text-muted">User comments and discussions</p>
+                                        <button class="btn btn-sm btn-outline-primary w-100">
+                                            <i class="bi bi-download"></i> Install
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title">Reviews</h6>
+                                            <span class="badge bg-warning">reviews</span>
+                                        </div>
+                                        <p class="card-text small text-muted">Product and service reviews with ratings</p>
+                                        <button class="btn btn-sm btn-outline-primary w-100">
+                                            <i class="bi bi-download"></i> Install
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title">Notifications</h6>
+                                            <span class="badge bg-info">notifications</span>
+                                        </div>
+                                        <p class="card-text small text-muted">Real-time notifications and alerts</p>
+                                        <button class="btn btn-sm btn-outline-primary w-100">
+                                            <i class="bi bi-download"></i> Install
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Integration Code</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="small text-muted">Add these files to your website:</p>
+                                <div class="mb-3">
+                                    <label class="form-label small">JavaScript (in &lt;head&gt;)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control font-monospace" 
+                                               value="<script src='https://example.com/cdn/webbloc.min.js'></script>" readonly>
+                                        <button class="btn btn-outline-secondary" type="button" 
+                                                onclick="copyToClipboard(this.previousElementSibling.value)">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small">CSS (in &lt;head&gt;)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control font-monospace" 
+                                               value="<link rel='stylesheet' href='https://example.com/cdn/webbloc.min.css'>" readonly>
+                                        <button class="btn btn-outline-secondary" type="button"
+                                                onclick="copyToClipboard(this.previousElementSibling.value)">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr>
+                                <p class="small text-muted">Example WebBloc usage:</p>
+                                <pre class="small"><code>&lt;div w2030b="auth" 
+     data-website-id="123"
+     data-api-key="your-public-key"&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+function websiteManager() {
+    return {
+        websites: @json($websites ?? []),
+        filteredWebsites: [],
+        filters: {
+            search: '',
+            status: '',
+            plan: ''
+        },
+        currentPage: 1,
+        perPage: 9,
+        selectedWebsite: null,
+        
+        init() {
+            this.filteredWebsites = this.websites;
+            this.filterWebsites();
+        },
+        
+        filterWebsites() {
+            this.filteredWebsites = this.websites.filter(website => {
+                const matchesSearch = !this.filters.search || 
+                    website.name.toLowerCase().includes(this.filters.search.toLowerCase()) ||
+                    website.domain.toLowerCase().includes(this.filters.search.toLowerCase());
+                
+                const matchesStatus = !this.filters.status || website.status === this.filters.status;
+                const matchesPlan = !this.filters.plan || website.plan === this.filters.plan;
+                
+                return matchesSearch && matchesStatus && matchesPlan;
+            });
+            
+            this.currentPage = 1;
+        },
+        
+        resetFilters() {
+            this.filters = { search: '', status: '', plan: '' };
+            this.filterWebsites();
+        },
+        
+        get totalWebsites() {
+            return this.filteredWebsites.length;
+        },
+        
+        get totalPages() {
+            return Math.ceil(this.totalWebsites / this.perPage);
+        },
+        
+        goToPage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+            }
+        },
+        
+        getVisiblePages() {
+            const pages = [];
+            const start = Math.max(1, this.currentPage - 2);
+            const end = Math.min(this.totalPages, this.currentPage + 2);
+            
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
+        
+        getStatusBadgeClass(status) {
+            const classes = {
+                'active': 'badge bg-success',
+                'pending': 'badge bg-warning',
+                'suspended': 'badge bg-danger',
+                'inactive': 'badge bg-secondary'
+            };
+            return classes[status] || 'badge bg-secondary';
+        },
+        
+        showCreateModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addWebsiteModal'));
+            modal.show();
+        },
+        
+        async createWebsite() {
+            // Implementation for creating website
+            Swal.fire('Success!', 'Website added successfully', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('addWebsiteModal')).hide();
+        },
+        
+        viewWebsite(website) {
+            window.location.href = `/dashboard/websites/${website.id}`;
+        },
+        
+        editWebsite(website) {
+            window.location.href = `/dashboard/websites/${website.id}/edit`;
+        },
+        
+        manageWebBlocs(website) {
+            this.selectedWebsite = website;
+            const modal = new bootstrap.Modal(document.getElementById('webBlocModal'));
+            modal.show();
+        },
+        
+        viewStats(website) {
+            window.location.href = `/dashboard/websites/${website.id}/statistics`;
+        },
+        
+        regenerateToken(website) {
+            Swal.fire({
+                title: 'Regenerate Token?',
+                text: 'This will invalidate the current verification token.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, regenerate!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Implementation for token regeneration
+                    Swal.fire('Success!', 'Verification token regenerated', 'success');
+                }
+            });
+        },
+        
+        deleteWebsite(website) {
+            Swal.fire({
+                title: 'Delete Website?',
+                text: `This will permanently delete "${website.name}" and all associated data.`,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Implementation for website deletion
+                    Swal.fire('Deleted!', 'Website has been deleted.', 'success');
+                }
+            });
+        },
+        
+        async refreshWebsites() {
+            try {
+                const response = await fetch('/dashboard/websites/refresh');
+                const data = await response.json();
+                this.websites = data.websites;
+                this.filterWebsites();
+            } catch (error) {
+                console.error('Failed to refresh websites:', error);
+            }
+        }
+    };
+}
+</script>
+@endpush
+```
+
+**File 11: `resources/views/dashboard/api-keys/index.blade.php`**
+
+```blade
+@extends('dashboard.layouts.app')
+
+@section('title', 'API Keys Management')
+
+@section('content')
+<div x-data="apiKeyManager()" x-init="init()">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">API Keys</h2>
+            <p class="text-muted mb-0">Manage API keys for your websites</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button @click="showCreateModal()" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Generate API Key
+            </button>
+            <button @click="refreshApiKeys()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- API Key Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card stats-card-primary card-hover h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-key fs-1 mb-2"></i>
+                    <h3 class="mb-1" x-text="stats.total || '0'">{{ $stats['total'] ?? 0 }}</h3>
+                    <small class="text-white-50">Total Keys</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stats-card-success card-hover h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle fs-1 mb-2"></i>
+                    <h3 class="mb-1" x-text="stats.active || '0'">{{ $stats['active'] ?? 0 }}</h3>
+                    <small class="text-white-50">Active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stats-card-warning card-hover h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-graph-up fs-1 mb-2"></i>
+                    <h3 class="mb-1" x-text="stats.requests_today || '0'">{{ $stats['requests_today'] ?? 0 }}</h3>
+                    <small class="text-white-50">Requests Today</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stats-card card-hover h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-exclamation-triangle fs-1 mb-2"></i>
+                    <h3 class="mb-1" x-text="stats.rate_limited || '0'">{{ $stats['rate_limited'] ?? 0 }}</h3>
+                    <small class="text-white-50">Rate Limited</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Search API keys..." 
+                               x-model="filters.search" @input="filterApiKeys()">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" x-model="filters.website" @change="filterApiKeys()">
+                        <option value="">All Websites</option>
+                        <template x-for="website in websites" :key="website.id">
+                            <option :value="website.id" x-text="website.name"></option>
+                        </template>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" x-model="filters.status" @change="filterApiKeys()">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button @click="resetFilters()" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Keys Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">API Keys</h5>
+            <span class="badge bg-secondary" x-text="`${filteredApiKeys.length} keys`"></span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Website</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Usage</th>
+                            <th>Last Used</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="apiKey in paginatedApiKeys" :key="apiKey.id">
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary rounded d-flex align-items-center justify-content-center" 
+                                                 style="width: 32px; height: 32px;">
+                                                <i class="bi bi-key text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="mb-0" x-text="apiKey.name"></h6>
+                                            <small class="text-muted">
+                                                <span x-text="apiKey.type === 'public' ? 'Public Key' : 'Secret Key'"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span x-text="apiKey.website?.name || 'Unknown'"></span>
+                                    <br>
+                                    <small class="text-muted" x-text="apiKey.website?.domain || ''"></small>
+                                </td>
+                                <td>
+                                    <span :class="apiKey.type === 'public' ? 'badge bg-info' : 'badge bg-warning'" 
+                                          x-text="apiKey.type"></span>
+                                </td>
+                                <td>
+                                    <span :class="getStatusBadgeClass(apiKey.status)" x-text="apiKey.status"></span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar" 
+                                                     :style="`width: ${getUsagePercentage(apiKey)}%`"
+                                                     :class="getUsageBarClass(apiKey)"></div>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted ms-2" x-text="`${apiKey.requests_today || 0}/${apiKey.rate_limit_daily || 10000}`"></small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span x-text="formatDate(apiKey.last_used_at)" class="text-muted"></span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button @click="viewApiKey(apiKey)" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button @click="copyApiKey(apiKey)" class="btn btn-outline-secondary">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary dropdown-toggle" 
+                                                    data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" @click="editApiKey(apiKey)">
+                                                    <i class="bi bi-pencil me-2"></i>Edit
+                                                </a></li>
+                                                <li><a class="dropdown-item" @click="regenerateApiKey(apiKey)">
+                                                    <i class="bi bi-arrow-clockwise me-2"></i>Regenerate
+                                                </a></li>
+                                                <li><a class="dropdown-item" @click="viewUsage(apiKey)">
+                                                    <i class="bi bi-graph-up me-2"></i>Usage Stats
+                                                </a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <template x-if="apiKey.status === 'active'">
+                                                    <li><a class="dropdown-item text-warning" @click="suspendApiKey(apiKey)">
+                                                        <i class="bi bi-pause me-2"></i>Suspend
+                                                    </a></li>
+                                                </template>
+                                                <template x-if="apiKey.status === 'suspended'">
+                                                    <li><a class="dropdown-item text-success" @click="activateApiKey(apiKey)">
+                                                        <i class="bi bi-play me-2"></i>Activate
+                                                    </a></li>
+                                                </template>
+                                                <li><a class="dropdown-item text-danger" @click="deleteApiKey(apiKey)">
+                                                    <i class="bi bi-trash me-2"></i>Delete
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        
+                        <!-- Empty State -->
+                        <template x-if="filteredApiKeys.length === 0">
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="bi bi-key display-4 text-muted"></i>
+                                    <h5 class="mt-3">No API keys found</h5>
+                                    <p class="text-muted">Generate your first API key to get started with WebBloc integration.</p>
+                                    <button @click="showCreateModal()" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Generate API Key
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-4" x-show="totalPages > 1">
+        <div>
+            <small class="text-muted">
+                Showing <span x-text="((currentPage - 1) * perPage) + 1"></span> to 
+                <span x-text="Math.min(currentPage * perPage, filteredApiKeys.length)"></span> of 
+                <span x-text="filteredApiKeys.length"></span> API keys
+            </small>
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <button class="page-link" @click="goToPage(currentPage - 1)">Previous</button>
+                </li>
+                <template x-for="page in getVisiblePages()" :key="page">
+                    <li class="page-item" :class="{ active: page === currentPage }">
+                        <button class="page-link" @click="goToPage(page)" x-text="page"></button>
+                    </li>
+                </template>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <button class="page-link" @click="goToPage(currentPage + 1)">Next</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Create API Key Modal -->
+<div class="modal fade" id="createApiKeyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form @submit.prevent="createApiKey()" x-data="{ form: { name: '', website_id: '', type: 'public', permissions: [], rate_limit_per_minute: 100, rate_limit_daily: 10000, allowed_domains: '', allowed_ips: '' } }">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate New API Key</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Key Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" x-model="form.name" required
+                                   placeholder="Production Key">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Website <span class="text-danger">*</span></label>
+                            <select class="form-select" x-model="form.website_id" required>
+                                <option value="">Select Website</option>
+                                <template x-for="website in websites" :key="website.id">
+                                    <option :value="website.id" x-text="website.name"></option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Key Type</label>
+                            <select class="form-select" x-model="form.type">
+                                <option value="public">Public Key (Client-side safe)</option>
+                                <option value="secret">Secret Key (Server-side only)</option>
+                            </select>
+                            <div class="form-text">Public keys can be exposed in frontend code, secret keys cannot.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Environment</label>
+                            <select class="form-select" x-model="form.environment">
+                                <option value="production">Production</option>
+                                <option value="staging">Staging</option>
+                                <option value="development">Development</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Rate Limiting -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Rate Limit (per minute)</label>
+                            <input type="number" class="form-control" x-model="form.rate_limit_per_minute" 
+                                   min="1" max="1000">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Daily Limit</label>
+                            <input type="number" class="form-control" x-model="form.rate_limit_daily" 
+                                   min="100" max="1000000">
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="mb-3">
+                        <label class="form-label">Allowed Domains</label>
+                        <textarea class="form-control" x-model="form.allowed_domains" rows="2"
+                                  placeholder="example.com, *.example.com (one per line)"></textarea>
+                        <div class="form-text">Leave empty to allow all domains. Use * for wildcards.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Allowed IPs</label>
+                        <textarea class="form-control" x-model="form.allowed_ips" rows="2"
+                                  placeholder="192.168.1.1, 10.0.0.0/8 (one per line)"></textarea>
+                        <div class="form-text">Leave empty to allow all IPs. Supports CIDR notation.</div>
+                    </div>
+
+                    <!-- Permissions -->
+                    <div class="mb-3">
+                        <label class="form-label">Permissions</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="webbloc:read" x-model="form.permissions">
+                                    <label class="form-check-label">Read WebBlocs</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="webbloc:write" x-model="form.permissions">
+                                    <label class="form-check-label">Write WebBlocs</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="auth:manage" x-model="form.permissions">
+                                    <label class="form-check-label">Manage Auth</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="stats:read" x-model="form.permissions">
+                                    <label class="form-check-label">Read Statistics</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-key"></i> Generate API Key
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- API Key Details Modal -->
+<div class="modal fade" id="apiKeyDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" x-data="{ selectedApiKey: null }">
+            <div class="modal-header">
+                <h5 class="modal-title">API Key Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <template x-if="selectedApiKey">
+                    <div>
+                        <!-- Key Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6>Key Information</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Name:</strong></td>
+                                        <td x-text="selectedApiKey.name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Type:</strong></td>
+                                        <td><span :class="selectedApiKey.type === 'public' ? 'badge bg-info' : 'badge bg-warning'" x-text="selectedApiKey.type"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Status:</strong></td>
+                                        <td><span :class="getStatusBadgeClass(selectedApiKey.status)" x-text="selectedApiKey.status"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created:</strong></td>
+                                        <td x-text="formatDate(selectedApiKey.created_at)"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Usage Statistics</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Today:</strong></td>
+                                        <td x-text="`${selectedApiKey.requests_today || 0}/${selectedApiKey.rate_limit_daily || 10000}`"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>This Month:</strong></td>
+                                        <td x-text="selectedApiKey.requests_month || '0'"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total:</strong></td>
+                                        <td x-text="selectedApiKey.total_requests || '0'"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Last Used:</strong></td>
+                                        <td x-text="formatDate(selectedApiKey.last_used_at)"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- API Key Value -->
+                        <div class="mb-4">
+                            <label class="form-label">API Key</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control font-monospace" 
+                                       :value="selectedApiKey.key" readonly id="apiKeyValue">
+                                <button class="btn btn-outline-secondary" type="button" 
+                                        onclick="toggleApiKeyVisibility()">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" type="button" 
+                                        @click="copyToClipboard(selectedApiKey.key)">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Integration Example -->
+                        <div class="mb-3">
+                            <label class="form-label">Integration Example</label>
+                            <pre class="bg-light p-3 rounded"><code>&lt;div w2030b="auth" 
+     data-website-id="<span x-text="selectedApiKey.website_id"></span>"
+     data-api-key="<span x-text="selectedApiKey.key"></span>"&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @click="editApiKey(selectedApiKey)">
+                    <i class="bi bi-pencil"></i> Edit Key
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+function apiKeyManager() {
+    return {
+        apiKeys: @json($apiKeys ?? []),
+        websites: @json($websites ?? []),
+        stats: @json($stats ?? {}),
+        filteredApiKeys: [],
+        filters: {
+            search: '',
+            website: '',
+            status: ''
+        },
+        currentPage: 1,
+        perPage: 10,
+        selectedApiKey: null,
+        
+        init() {
+            this.filteredApiKeys = this.apiKeys;
+            this.filterApiKeys();
+        },
+        
+        filterApiKeys() {
+            this.filteredApiKeys = this.apiKeys.filter(apiKey => {
+                const matchesSearch = !this.filters.search || 
+                    apiKey.name.toLowerCase().includes(this.filters.search.toLowerCase());
+                
+                const matchesWebsite = !this.filters.website || 
+                    apiKey.website_id.toString() === this.filters.website;
+                
+                const matchesStatus = !this.filters.status || apiKey.status === this.filters.status;
+                
+                return matchesSearch && matchesWebsite && matchesStatus;
+            });
+            
+            this.currentPage = 1;
+        },
+        
+        resetFilters() {
+            this.filters = { search: '', website: '', status: '' };
+            this.filterApiKeys();
+        },
+        
+        get paginatedApiKeys() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.filteredApiKeys.slice(start, end);
+        },
+        
+        get totalPages() {
+            return Math.ceil(this.filteredApiKeys.length / this.perPage);
+        },
+        
+        goToPage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+            }
+        },
+        
+        getVisiblePages() {
+            const pages = [];
+            const start = Math.max(1, this.currentPage - 2);
+            const end = Math.min(this.totalPages, this.currentPage + 2);
+            
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
+        
+        getStatusBadgeClass(status) {
+            const classes = {
+                'active': 'badge bg-success',
+                'suspended': 'badge bg-warning',
+                'expired': 'badge bg-danger'
+            };
+            return classes[status] || 'badge bg-secondary';
+        },
+        
+        getUsagePercentage(apiKey) {
+            const daily = apiKey.requests_today || 0;
+            const limit = apiKey.rate_limit_daily || 10000;
+            return Math.min((daily / limit) * 100, 100);
+        },
+        
+        getUsageBarClass(apiKey) {
+            const percentage = this.getUsagePercentage(apiKey);
+            if (percentage >= 90) return 'bg-danger';
+            if (percentage >= 70) return 'bg-warning';
+            return 'bg-success';
+        },
+        
+        formatDate(date) {
+            if (!date) return 'Never';
+            return new Date(date).toLocaleDateString();
+        },
+        
+        showCreateModal() {
+            const modal = new bootstrap.Modal(document.getElementById('createApiKeyModal'));
+            modal.show();
+        },
+        
+        async createApiKey() {
+            // Implementation for creating API key
+            Swal.fire('Success!', 'API key generated successfully', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('createApiKeyModal')).hide();
+        },
+        
+        viewApiKey(apiKey) {
+            this.selectedApiKey = apiKey;
+            const modal = new bootstrap.Modal(document.getElementById('apiKeyDetailsModal'));
+            modal.show();
+        },
+        
+        copyApiKey(apiKey) {
+            copyToClipboard(apiKey.key);
+        },
+        
+        editApiKey(apiKey) {
+            // Implementation for editing API key
+            console.log('Edit API key:', apiKey.id);
+        },
+        
+        regenerateApiKey(apiKey) {
+            Swal.fire({
+                title: 'Regenerate API Key?',
+                text: 'This will invalidate the current key. Make sure to update your integrations.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, regenerate!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Implementation for regenerating API key
+                    Swal.fire('Success!', 'API key regenerated successfully', 'success');
+                }
+            });
+        },
+        
+        suspendApiKey(apiKey) {
+            Swal.fire({
+                title: 'Suspend API Key?',
+                text: 'This will temporarily disable the API key.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, suspend!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    apiKey.status = 'suspended';
+                    Swal.fire('Success!', 'API key suspended', 'success');
+                }
+            });
+        },
+        
+        activateApiKey(apiKey) {
+            apiKey.status = 'active';
+            Swal.fire('Success!', 'API key activated', 'success');
+        },
+        
+        deleteApiKey(apiKey) {
+            Swal.fire({
+                title: 'Delete API Key?',
+                text: 'This action cannot be undone.',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Implementation for deleting API key
+                    Swal.fire('Deleted!', 'API key has been deleted.', 'success');
+                }
+            });
+        },
+        
+        viewUsage(apiKey) {
+            window.location.href = `/dashboard/api-keys/${apiKey.id}/usage`;
+        },
+        
+        async refreshApiKeys() {
+            try {
+                const response = await fetch('/dashboard/api-keys/refresh');
+                const data = await response.json();
+                this.apiKeys = data.apiKeys;
+                this.stats = data.stats;
+                this.filterApiKeys();
+            } catch (error) {
+                console.error('Failed to refresh API keys:', error);
+            }
+        }
+    };
+}
+
+function toggleApiKeyVisibility() {
+    const input = document.getElementById('apiKeyValue');
+    const icon = document.getElementById('toggleIcon');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye';
+    }
+}
+</script>
+@endpush
+```
+
+**File 12: `routes/web.php`**
+
+```php
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Dashboard\AdminController;
+use App\Http\Controllers\Dashboard\WebsiteController;
+use App\Http\Controllers\Dashboard\ApiKeyController;
+use App\Http\Controllers\Dashboard\WebBlocController;
+use App\Http\Controllers\Dashboard\StatisticsController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+Route::get('/dashboard', function () {
+    if (auth()->user()->hasRole('admin')) {
+        return redirect()->route('dashboard.admin.index');
+    }
+    return redirect()->route('dashboard.websites.index');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Dashboard Routes
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+    
+    // Admin Dashboard Routes
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('/stats', [AdminController::class, 'stats'])->name('stats');
+        Route::get('/activities', [AdminController::class, 'activities'])->name('activities');
+        Route::post('/clear-cache', [AdminController::class, 'clearCache'])->name('clear-cache');
+        Route::post('/optimize-db', [AdminController::class, 'optimizeDatabase'])->name('optimize-db');
+        Route::post('/backup', [AdminController::class, 'backupSystem'])->name('backup');
+        Route::get('/system-info', [AdminController::class, 'systemInfo'])->name('system-info');
+    });
+
+    // Website Management Routes
+    Route::resource('websites', WebsiteController::class);
+    Route::prefix('websites')->name('websites.')->group(function () {
+        Route::get('refresh', [WebsiteController::class, 'refresh'])->name('refresh');
+        Route::post('{website}/verify', [WebsiteController::class, 'verify'])->name('verify');
+        Route::post('{website}/regenerate-token', [WebsiteController::class, 'regenerateToken'])->name('regenerate-token');
+        Route::get('{website}/statistics', [WebsiteController::class, 'statistics'])->name('statistics');
+        Route::get('{website}/webblocs', [WebsiteController::class, 'webblocs'])->name('webblocs');
+        Route::post('{website}/webblocs/{webbloc}/install', [WebsiteController::class, 'installWebBloc'])->name('install-webbloc');
+        Route::delete('{website}/webblocs/{webbloc}/uninstall', [WebsiteController::class, 'uninstallWebBloc'])->name('uninstall-webbloc');
+        Route::get('{website}/integration-code', [WebsiteController::class, 'integrationCode'])->name('integration-code');
+    });
+
+    // API Key Management Routes
+    Route::resource('api-keys', ApiKeyController::class);
+    Route::prefix('api-keys')->name('api-keys.')->group(function () {
+        Route::get('refresh', [ApiKeyController::class, 'refresh'])->name('refresh');
+        Route::post('{apiKey}/regenerate', [ApiKeyController::class, 'regenerate'])->name('regenerate');
+        Route::post('{apiKey}/suspend', [ApiKeyController::class, 'suspend'])->name('suspend');
+        Route::post('{apiKey}/activate', [ApiKeyController::class, 'activate'])->name('activate');
+        Route::get('{apiKey}/usage', [ApiKeyController::class, 'usage'])->name('usage');
+        Route::get('{apiKey}/logs', [ApiKeyController::class, 'logs'])->name('logs');
+        Route::post('{apiKey}/test', [ApiKeyController::class, 'test'])->name('test');
+    });
+
+    // WebBloc Management Routes (Admin Only)
+    Route::middleware(['role:admin'])->group(function () {
+        Route::resource('webblocs', WebBlocController::class);
+        Route::prefix('webblocs')->name('webblocs.')->group(function () {
+            Route::get('refresh', [WebBlocController::class, 'refresh'])->name('refresh');
+            Route::post('{webbloc}/duplicate', [WebBlocController::class, 'duplicate'])->name('duplicate');
+            Route::get('{webbloc}/export', [WebBlocController::class, 'export'])->name('export');
+            Route::post('import', [WebBlocController::class, 'import'])->name('import');
+            Route::post('{webbloc}/install-all', [WebBlocController::class, 'installToAllWebsites'])->name('install-all');
+            Route::post('{webbloc}/build', [WebBlocController::class, 'buildComponent'])->name('build');
+            Route::get('{webbloc}/preview', [WebBlocController::class, 'preview'])->name('preview');
+            Route::post('{webbloc}/test', [WebBlocController::class, 'test'])->name('test');
+        });
+    });
+
+    // Statistics and Analytics Routes
+    Route::prefix('statistics')->name('statistics.')->group(function () {
+        Route::get('/', [StatisticsController::class, 'index'])->name('index');
+        Route::get('/website/{website?}', [StatisticsController::class, 'website'])->name('website');
+        Route::get('/realtime', [StatisticsController::class, 'realtime'])->name('realtime');
+        Route::get('/export', [StatisticsController::class, 'export'])->name('export');
+        Route::get('/api-usage', [StatisticsController::class, 'apiUsage'])->name('api-usage');
+        Route::get('/webbloc-performance', [StatisticsController::class, 'webBlocPerformance'])->name('webbloc-performance');
+        Route::get('/error-analysis', [StatisticsController::class, 'errorAnalysis'])->name('error-analysis');
+        Route::get('/geographic', [StatisticsController::class, 'geographic'])->name('geographic');
+    });
+
+    // CDN and Assets Routes
+    Route::prefix('cdn')->name('cdn.')->group(function () {
+        Route::post('/build', [WebBlocController::class, 'buildCdn'])->name('build');
+        Route::get('/status', [WebBlocController::class, 'cdnStatus'])->name('status');
+        Route::post('/purge', [WebBlocController::class, 'purgeCdn'])->name('purge');
+    });
+
+    // System Management Routes (Admin Only)
+    Route::middleware(['role:admin'])->prefix('system')->name('system.')->group(function () {
+        Route::get('/health', [AdminController::class, 'systemHealth'])->name('health');
+        Route::get('/logs', [AdminController::class, 'viewLogs'])->name('logs');
+        Route::post('/maintenance-mode', [AdminController::class, 'toggleMaintenanceMode'])->name('maintenance-mode');
+        Route::get('/database-status', [AdminController::class, 'databaseStatus'])->name('database-status');
+        Route::post('/run-migrations', [AdminController::class, 'runMigrations'])->name('run-migrations');
+        Route::get('/queue-status', [AdminController::class, 'queueStatus'])->name('queue-status');
+        Route::post('/restart-workers', [AdminController::class, 'restartWorkers'])->name('restart-workers');
+    });
+
+    // Documentation and Help Routes
+    Route::prefix('help')->name('help.')->group(function () {
+        Route::get('/', function () {
+            return view('dashboard.help.index');
+        })->name('index');
+        Route::get('/api-documentation', function () {
+            return view('dashboard.help.api-documentation');
+        })->name('api-documentation');
+        Route::get('/integration-guide', function () {
+            return view('dashboard.help.integration-guide');
+        })->name('integration-guide');
+        Route::get('/webbloc-reference', function () {
+            return view('dashboard.help.webbloc-reference');
+        })->name('webbloc-reference');
+        Route::get('/troubleshooting', function () {
+            return view('dashboard.help.troubleshooting');
+        })->name('troubleshooting');
+        Route::get('/faq', function () {
+            return view('dashboard.help.faq');
+        })->name('faq');
+    });
+});
+
+// Public WebBloc demonstration routes
+Route::prefix('demo')->name('demo.')->group(function () {
+    Route::get('/', function () {
+        return view('demo.index');
+    })->name('index');
+    
+    Route::get('/auth', function () {
+        return view('demo.auth');
+    })->name('auth');
+    
+    Route::get('/comments', function () {
+        return view('demo.comments');
+    })->name('comments');
+    
+    Route::get('/reviews', function () {
+        return view('demo.reviews');
+    })->name('reviews');
+    
+    Route::get('/notifications', function () {
+        return view('demo.notifications');
+    })->name('notifications');
+});
+
+// CDN Routes (public access for WebBloc assets)
+Route::prefix('cdn')->name('cdn.')->group(function () {
+    Route::get('/webbloc.min.js', function () {
+        return response()->file(public_path('cdn/webbloc.min.js'))
+            ->header('Content-Type', 'application/javascript')
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*');
+    })->name('js');
+    
+    Route::get('/webbloc.min.css', function () {
+        return response()->file(public_path('cdn/webbloc.min.css'))
+            ->header('Content-Type', 'text/css')
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*');
+    })->name('css');
+    
+    Route::get('/webbloc-components/{component}.js', function ($component) {
+        $path = public_path("cdn/components/{$component}.js");
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        return response()->file($path)
+            ->header('Content-Type', 'application/javascript')
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*');
+    })->name('component-js');
+    
+    Route::get('/webbloc-components/{component}.css', function ($component) {
+        $path = public_path("cdn/components/{$component}.css");
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        return response()->file($path)
+            ->header('Content-Type', 'text/css')
+            ->header('Cache-Control', 'public, max-age=31536000')
+            ->header('Access-Control-Allow-Origin', '*');
+    })->name('component-css');
+});
+
+// Installation and Setup Routes (for automated deployment)
+Route::prefix('setup')->middleware('guest')->name('setup.')->group(function () {
+    Route::get('/', function () {
+        if (Schema::hasTable('users')) {
+            return redirect('/');
+        }
+        return view('setup.index');
+    })->name('index');
+    
+    Route::post('/database', function () {
+        // Database setup logic
+        return response()->json(['success' => true]);
+    })->name('database');
+    
+    Route::post('/admin', function () {
+        // Admin user creation logic
+        return response()->json(['success' => true]);
+    })->name('admin');
+    
+    Route::post('/complete', function () {
+        // Setup completion logic
+        return response()->json(['success' => true]);
+    })->name('complete');
+});
+
+// Webhook Routes (for external integrations)
+Route::prefix('webhooks')->name('webhooks.')->group(function () {
+    Route::post('/github', function () {
+        // GitHub webhook for automated deployments
+        return response()->json(['received' => true]);
+    })->name('github');
+    
+    Route::post('/payment/{provider}', function ($provider) {
+        // Payment webhook handlers
+        return response()->json(['received' => true]);
+    })->name('payment');
+});
+
+// Health Check Route (for monitoring)
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now(),
+        'version' => config('app.version', '1.0.0'),
+        'environment' => app()->environment(),
+        'services' => [
+            'database' => DB::connection()->getPdo() ? 'connected' : 'disconnected',
+            'cache' => Cache::store()->getStore() ? 'connected' : 'disconnected',
+            'queue' => 'unknown' // Could be enhanced with actual queue health check
+        ]
+    ]);
+})->name('health');
+
+// Fallback route for SPA behavior (if needed)
+Route::fallback(function () {
+    return view('errors.404');
+});
+
+require __DIR__.'/auth.php';
+```
