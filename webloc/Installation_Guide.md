@@ -113,6 +113,49 @@ php artisan make:notification WebsiteRegistered
 php artisan make:notification WebBlocInstalled
 ```
 
+### 1.18 Bootstrap Configuration (Laravel 12+)
+
+#### 1.18.1 Update `bootstrap/app.php`
+```php
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->api(prepend: [
+            \App\Http\Middleware\CorsMiddleware::class,
+        ]);
+        
+        $middleware->alias([
+            'validate.api.key' => \App\Http\Middleware\ValidateApiKey::class,
+            'dynamic.sqlite' => \App\Http\Middleware\DynamicSqliteConnection::class,
+            'webbloc.rate.limiter' => \App\Http\Middleware\WebBlocRateLimiter::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
+```
+
+#### 1.18.2 Create `bootstrap/providers.php`
+```php
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    App\Providers\DatabaseConnectionServiceProvider::class,
+];
+```
+
 ## Step 2: Enhanced Project Files Structure (75+ Files) with WebBloc Standard
 
 | # | File Path | Artisan Command | Purpose | Dependencies |
